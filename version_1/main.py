@@ -1,60 +1,33 @@
 from PIL import Image, ImageDraw
 import random
+from map import Map
+from continent import Continent
 from scipy.spatial import Voronoi
 import time
 
-H, W = 300, 500
-size = 30
-
-def grid(size, i, j):
-	return (size*(i + random.random()), size*(j + random.random()))
-
-arr = [[grid(size, i, j) for j in range(W)] for i in range(H)]
+H, W = 100, 200
+size = 100
 
 img = Image.new("RGB", (W*size, H*size))
 draw = ImageDraw.Draw(img, "RGBA")
 
-for i in range(H):
-	for j in range(W):
-		draw.point((arr[i][j][1], arr[i][j][0]))
+worldMap = Map(W, H, size)
+worldMap.create_map()
 
-q = []
-for i in range(H):
-	for j in range(W):
-		q.append(arr[i][j])
-vor = Voronoi(q)
 
-ver = vor.vertices
-reg = vor.regions
-point_reg = vor.point_region
+continent1 = Continent((50, 50), "Asia")
+continent2 = Continent((30, 150), "Europe")
+continent3 = Continent((70, 100), "America")
+for i in range(150):
+	continent1.increase_territory(worldMap, 5)
+	continent2.increase_territory(worldMap, 5)
+	continent3.increase_territory(worldMap, 5)
 
-arr2 = [[[] for j in range(W)] for i in range(H)]
+
 
 for i in range(H):
 	for j in range(W):
-		cur_ind = point_reg[i*W + j]
-		cur_reg = reg[cur_ind]
-		for z in range(len(cur_reg)):
-			if cur_reg[z] == -1:
-				continue
-
-			p = ver[cur_reg[z]]
-			p = tuple(p)
-			point = (p[1], p[0])
-			arr2[i][j].append(point)
-
-arr3 = [[[] for j in range(W)] for i in range(H)]
-
-for i in range(H):
-	for j in range(W):
-		R = random.randint(0, 10)
-		G = random.randint(0, 10)
-		B = random.randint(245, 255)
-		T = random.randint(100, 102)
-		draw.polygon(arr2[i][j], fill=(R, G, B, T))
+		draw.polygon(worldMap.cells[i][j].borders, fill = worldMap.cells[i][j].color)
 
 img.save("map.png")
-
-
-## Create continents
 
