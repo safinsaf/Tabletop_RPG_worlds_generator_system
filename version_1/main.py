@@ -2,6 +2,8 @@ from PIL import Image, ImageDraw
 import random
 from map import Map
 from continent import Continent
+from biom import Biom
+from plugins.__read_bioms__ import read_bioms
 from scipy.spatial import Voronoi
 import time
 
@@ -23,6 +25,24 @@ for i in range(150):
 	continent2.increase_territory(worldMap, 10)
 	continent3.increase_territory(worldMap, 5)
 
+bioms = read_bioms()
+
+biom1 = Biom((45, 45), "Forest A", "Forest", bioms)
+biom2 = Biom((30, 150), "Swamp B", "Swamp", bioms)
+biom3 = Biom((70, 100), "Desert C", "Desert", bioms)
+biom4 = Biom((55, 55), "Tundra A", "Tundra", bioms)
+biom5 = Biom((20, 140), "Mountain B", "Mountain", bioms)
+biom6 = Biom((60, 110), "Hill C", "Hill", bioms)
+biom7 = Biom((60, 65), "Mountain C", "Mountain", bioms)
+
+for i in range(100):
+	biom1.increase_territory(worldMap, 10)
+	biom2.increase_territory(worldMap, 10)
+	biom3.increase_territory(worldMap, 5)
+	biom4.increase_territory(worldMap, 10)
+	biom5.increase_territory(worldMap, 10)
+	biom6.increase_territory(worldMap, 10)
+	biom7.increase_territory(worldMap, 10)
 
 
 for i in range(H):

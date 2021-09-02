@@ -47,8 +47,8 @@ class Continent:
         R = random.randint(30, 50)
         G = random.randint(200, 220)
         B = random.randint(0, 10)
-        T = random.randint(100, 102)
-        worldMap.cells[x][y].color = (R, G, B, T)
+        A = random.randint(200, 210)
+        worldMap.cells[x][y].color = (R, G, B, A)
         self.coords_arr.append((x,y))
 
 
@@ -58,8 +58,6 @@ class Continent:
     def increase_territory(self, worldMap, times):
         self.__find_neighbors__(worldMap)
         random.shuffle(self.neighbors)
-
-
 
         size = min(times, len(self.neighbors))
         for i in range(size):
