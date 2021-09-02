@@ -50,9 +50,6 @@ class Map:
     def __create_cells__(self, centers, cell_regions):
         cells = []
 
-        print("centers:", len(centers))
-        print("cells:", len(cells))
-
         for i in range(self.H):
             cells.append([])
             for j in range(self.W):

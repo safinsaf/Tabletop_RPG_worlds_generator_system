@@ -6,7 +6,7 @@ class Continent:
     coords_arr = [(10,10),(10,11),(11,10)]
     coords_dic = []
     neighbors = []
-    ID = "Africa"
+    # ID = "Africa"
 
     def __init__(self, start_coords, ID):
 
@@ -21,7 +21,7 @@ class Continent:
 
 
     def __free__(self, x, y, worldMap):
-        if worldMap.cells[x][y].level_0 == "Sea":
+        if worldMap.cells[x][y].level_0 == "Ocean":
             return True
         else:
             return False
@@ -44,8 +44,8 @@ class Continent:
         new_cell = self.neighbors.pop()
         (x, y) = new_cell
         worldMap.cells[x][y].level_0 = self.ID
-        R = random.randint(200, 220)
-        G = random.randint(0, 10)
+        R = random.randint(30, 50)
+        G = random.randint(200, 220)
         B = random.randint(0, 10)
         T = random.randint(100, 102)
         worldMap.cells[x][y].color = (R, G, B, T)

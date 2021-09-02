@@ -19,8 +19,8 @@ continent1 = Continent((50, 50), "Asia")
 continent2 = Continent((30, 150), "Europe")
 continent3 = Continent((70, 100), "America")
 for i in range(150):
-	continent1.increase_territory(worldMap, 5)
-	continent2.increase_territory(worldMap, 5)
+	continent1.increase_territory(worldMap, 10)
+	continent2.increase_territory(worldMap, 10)
 	continent3.increase_territory(worldMap, 5)
 
 
@@ -29,5 +29,5 @@ for i in range(H):
 	for j in range(W):
 		draw.polygon(worldMap.cells[i][j].borders, fill = worldMap.cells[i][j].color)
 
-img.save("map.png")
+img.save(r"map.png")
 
