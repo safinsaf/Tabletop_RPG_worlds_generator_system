@@ -1,4 +1,3 @@
-import codecs
 import os
 from fnmatch import fnmatch
 from json import load
@@ -15,8 +14,6 @@ def read_bioms():
             if not fnmatch(name, pattern):
                 continue
             plugin_name = name[:-5]
-            # fileObj = codecs.open(path + "/" + name, encoding="utf-8", mode="rb", errors="ignore")
-            # file = fileObj.read()
             with open(
                 path + "/" + name, encoding="UTF-8", errors="ignore"
             ) as json_file:
