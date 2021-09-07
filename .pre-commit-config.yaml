@@ -1,0 +1,31 @@
+default_language_version:
+  python: python3.9
+
+default_stages: [commit, push]
+
+repos:
+  - repo: https://github.com/ambv/black
+    rev: 21.8b0
+    hooks:
+      - id: black
+        language_version: python3.9
+
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.9.3
+    hooks:
+      - id: isort
+
+#  - repo: local
+#    hooks:
+
+#      - id: isort
+#        name: isort
+#        entry: isort --settings-path setup.cfg
+#        types: [ python ]
+#        language: system
+
+#      - id: pylint
+#        name: pylint
+#        entry: pylint --rcfile=setup.cfg
+#        types: [ python ]
+#        language: system
