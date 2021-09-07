@@ -15,17 +15,11 @@ repos:
     hooks:
       - id: isort
 
-#  - repo: local
-#    hooks:
+  - repo: local
+    hooks:
 
-#      - id: isort
-#        name: isort
-#        entry: isort --settings-path setup.cfg
-#        types: [ python ]
-#        language: system
-
-#      - id: pylint
-#        name: pylint
-#        entry: pylint --rcfile=setup.cfg
-#        types: [ python ]
-#        language: system
+      - id: pylint
+        name: pylint
+        entry: pylint --rcfile=setup.cfg
+        types: [ python ]
+        language: system
