@@ -5,13 +5,13 @@ from continent import Continent
 from map import Map
 from plugins.__read_bioms__ import read_bioms
 
-H, W = 100, 200
+HEIGHT, WIDTH = 100, 200
 size = 100
 
-img = Image.new("RGB", (W * size, H * size))
+img = Image.new("RGB", (WIDTH * size, HEIGHT * size))
 draw = ImageDraw.Draw(img, "RGBA")
 
-worldMap = Map(W, H, size)
+worldMap = Map(WIDTH, HEIGHT, size)
 worldMap.create_map()
 
 
@@ -44,8 +44,8 @@ for i in range(100):
     biom7.increase_territory(worldMap, 10)
 
 
-for i in range(H):
-    for j in range(W):
+for i in range(HEIGHT):
+    for j in range(WIDTH):
         draw.polygon(worldMap.cells[i][j].borders, fill=worldMap.cells[i][j].color)
 
 img.save(r"map.png", "PNG")

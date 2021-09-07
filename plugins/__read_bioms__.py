@@ -2,16 +2,16 @@ import os
 from fnmatch import fnmatch
 from json import load
 
-root = "./plugins"
-pattern = "*.json"
+ROOT = "./plugins"
+PATTERN = "*.json"
 
 
 def read_bioms():
     plugins = {}
 
-    for path, _, files in os.walk(root):
+    for path, _, files in os.walk(ROOT):
         for name in files:
-            if not fnmatch(name, pattern):
+            if not fnmatch(name, PATTERN):
                 continue
             plugin_name = name[:-5]
             with open(

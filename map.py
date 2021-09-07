@@ -21,6 +21,18 @@ class Map:
     def __grid__(self, i, j):
         return (self.size * (i + random.random()), self.size * (j + random.random()))
 
+    def __find_neighbors__(self, area_object):
+        neighbors = []
+        for el in area_object.coords_arr:
+            d = [(0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+            possible_neighbors = []
+            for (dx, dy) in d:
+                possible_neighbors.append((el[0] + dx, el[1] + dy))
+            for (x, y) in possible_neighbors:
+                if area_object.__free__(x, y, self):
+                    neighbors.append((x, y))
+        return neighbors
+
     def __create_voronoi__(self, centers):
 
         centers_merged = []
