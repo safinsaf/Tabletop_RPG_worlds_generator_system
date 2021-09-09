@@ -25,7 +25,8 @@ class Biom:
 
     def __free__(self, x, y, world_map):
         return (
-            world_map.cells[x][y].level_0 != "Ocean"
+            world_map.in_map(x, y)
+            and world_map.cells[x][y].level_0 != "Ocean"
             and world_map.cells[x][y].level_1 == "Biom"
         )
 

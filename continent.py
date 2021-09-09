@@ -21,7 +21,7 @@ class Continent:
             self.coords_arr = [start_coords]
 
     def __free__(self, x, y, world_map):
-        return world_map.cells[x][y].level_0 == "Ocean"
+        return world_map.in_map(x, y) and world_map.cells[x][y].level_0 == "Ocean"
 
     def __increase_territory__(self, world_map):
         new_cell = self.neighbors.pop()
