@@ -20,6 +20,7 @@ class Map:
         self.size = size
         self.cells = []
         self.map_type = map_type
+        self.create_map()
 
     def __grid__(self, i, j):
         if self.map_type == "VORONOI":
@@ -29,12 +30,12 @@ class Map:
             )
         elif self.map_type == "HEX":
             if i % 2 == 0:
-                x = self.size * (i / 2)
-                y = self.size * j * sqrt(3)
+                x = self.size * (i) * (3 / 4)
+                y = self.size * j * sqrt(3) / 2
                 return (x, y)
             else:
-                x = self.size * (i / 2)
-                y = self.size * j * sqrt(3) + self.size * sqrt(3) / 2
+                x = self.size * (i) * (3 / 4)
+                y = self.size * j * sqrt(3) / 2 + self.size * sqrt(3) / 4
                 return (x, y)
         else:
             raise Exception("Incorrect map_type")
@@ -53,11 +54,11 @@ class Map:
         return neigbors
 
     def __hex_even_neighbors__(self):
-        neigbors_even = [(2, 0), (-2, 0), (1, 0), (1, -1), (-1, 0), (-1, -1)]
+        neigbors_even = [(0, -1), (0, 1), (-1, -1), (-1, 0), (1, -1), (1, 0)]
         return neigbors_even
 
     def __hex_odd_neighbors__(self):
-        neigbors_odd = [(2, 0), (-2, 0), (-1, 0), (1, 0), (-1, 1), (1, 1)]
+        neigbors_odd = [(0, -1), (0, 1), (-1, 0), (-1, 1), (1, 0), (1, 1)]
         return neigbors_odd
 
     def __find_neighbors__(self, area_object):
@@ -74,9 +75,29 @@ class Map:
             possible_neighbors = []
             for (dx, dy) in d:
                 possible_neighbors.append((el[0] + dx, el[1] + dy))
+
             for (x, y) in possible_neighbors:
                 if area_object.__free__(x, y, self):
                     neighbors.append((x, y))
+        return neighbors
+
+    def __find_all_neighbors__(self, elements):
+        neighbors = []
+        for el in elements:
+            d = []
+            if self.map_type == "VORONOI":
+                d = self.__voronoi_neighbors__()
+            elif self.map_type == "HEX":
+                if el[0] % 2 == 0:
+                    d = self.__hex_even_neighbors__()
+                elif el[0] % 2 == 1:
+                    d = self.__hex_odd_neighbors__()
+            possible_neighbors = []
+            for (dx, dy) in d:
+                possible_neighbors.append((el[0] + dx, el[1] + dy))
+
+            for (x, y) in possible_neighbors:
+                neighbors.append((x, y))
         return neighbors
 
     def __create_voronoi__(self, centers):
@@ -147,10 +168,10 @@ class Map:
             cell_borders.append([])
             for j in range(self.W + 2):
                 cur_center = centers[i][j]
-                a = 1 / 2
-                b = 1 / (2 * sqrt(3))
-
-                d = [(a, b), (0, 2 * b), (-a, b), (-a, -b), (0, -2 * b), (a, -b)]
+                a = sqrt(3) / 4
+                b = 1 / 4
+                c = 1 / 2
+                d = [(c, 0), (b, a), (-b, a), (-c, 0), (-b, -a), (b, -a)]
 
                 cur_borders = []
                 for z in d:
@@ -168,6 +189,10 @@ class Map:
         centers = [
             [centers[i][j] for j in range(1, self.W + 1)] for i in range(1, self.H + 1)
         ]
+        cell_borders = [
+            [cell_borders[i][j] for j in range(1, self.W + 1)]
+            for i in range(1, self.H + 1)
+        ]
         self.cells = self.__create_cells__(centers, cell_borders)
 
     def in_map(self, x, y):
@@ -177,8 +202,8 @@ class Map:
         if self.map_type == "VORONOI":
             return (self.W * self.size, self.H * self.size)
         elif self.map_type == "HEX":
-            i = self.size * self.H // 2
-            j = int(self.size * self.W * sqrt(3))
+            i = int(self.size * (self.H * 3 / 4 - 2))
+            j = int(self.size * (self.W * sqrt(3) / 2 - 2))
             x = j
             y = i
             return (x, y)

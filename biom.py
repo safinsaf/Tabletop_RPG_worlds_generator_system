@@ -7,6 +7,7 @@ class Biom:
     coords_arr = [(10, 10), (10, 11), (11, 10)]
     coords_dic = []
     neighbors = []
+    color_range = ((0, 0), (0, 0), (0, 0), (0, 0))  # RGBA ranges for random
 
     # name = "Africa"
 
@@ -23,6 +24,8 @@ class Biom:
             self.start_coords = [start_coords]
             self.coords_arr = [start_coords]
 
+        self.__set_default_color_range__()
+
     def __free__(self, x, y, world_map):
         return (
             world_map.in_map(x, y)
@@ -33,13 +36,11 @@ class Biom:
     def __increase_territory__(self, world_map):
         new_cell = self.neighbors.pop()
         (x, y) = new_cell
-        world_map.cells[x][y].level_1 = self.name
-        color = self.bioms[self.biom_type]["Color"]
-        R = random.randint(color["R_left"], color["R_right"])
-        G = random.randint(color["G_left"], color["G_right"])
-        B = random.randint(color["B_left"], color["B_right"])
-        A = random.randint(color["A_left"], color["A_right"])
-        world_map.cells[x][y].color = (R, G, B, A)
+        R = random.randint(self.color_range[0][0], self.color_range[0][1])
+        G = random.randint(self.color_range[1][0], self.color_range[1][1])
+        B = random.randint(self.color_range[2][0], self.color_range[2][1])
+        A = random.randint(self.color_range[3][0], self.color_range[3][1])
+        world_map.cells[x][y].set_biom(self.name, (R, G, B, A))
         self.coords_arr.append((x, y))
 
     def increase_territory(self, world_map, times):
@@ -56,3 +57,14 @@ class Biom:
 
         if left != 0:
             self.increase_territory(world_map, left)
+
+    def set_color_range(self, new_color_range):
+        self.color_range = new_color_range
+
+    def __set_default_color_range__(self):
+        color = self.bioms[self.biom_type]["Color"]
+        R = (color["R_left"], color["R_right"])
+        G = (color["G_left"], color["G_right"])
+        B = (color["B_left"], color["B_right"])
+        A = (color["A_left"], color["A_right"])
+        self.color_range = (R, G, B, A)

@@ -1,0 +1,9 @@
+{
+  "SpeedOfGrowth":5,
+  "Color" : {
+    "R_left": 200, "R_right": 220,
+    "G_left": 220, "G_right": 230,
+    "B_left": 140, "B_right": 150,
+    "A_left": 100, "A_right": 120
+  }
+}
