@@ -77,7 +77,7 @@ class Map:
                 possible_neighbors.append((el[0] + dx, el[1] + dy))
 
             for (x, y) in possible_neighbors:
-                if area_object.__free__(x, y, self):
+                if self.in_map(x, y) and area_object.__free__(x, y, self):
                     neighbors.append((x, y))
         return neighbors
 
@@ -97,7 +97,8 @@ class Map:
                 possible_neighbors.append((el[0] + dx, el[1] + dy))
 
             for (x, y) in possible_neighbors:
-                neighbors.append((x, y))
+                if self.in_map(x, y):
+                    neighbors.append((x, y))
         return neighbors
 
     def __create_voronoi__(self, centers):

@@ -5,5 +5,11 @@
     "G_left": 110, "G_right": 120,
     "B_left": 110, "B_right": 120,
     "A_left": 110, "A_right": 120
+  },
+  "ColorHSV": {
+    "H": 40,
+    "S": 60,
+    "V_left": 45,
+    "V_right": 90
   }
 }

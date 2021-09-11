@@ -28,13 +28,12 @@ class Continent:
 
     def __increase_territory__(self, world_map):
         (x, y) = self.neighbors.pop()
-        print(world_map.cells[x][y].level_0)
         world_map.cells[x][y].set_continent(self.name, self.color_range)
         self.coords_arr.append((x, y))
 
     def increase_territory(self, world_map, times):
         self.neighbors = world_map.__find_neighbors__(self)
-        self.neighbors = list(dict.fromkeys(self.neighbors))
+        # self.neighbors = list(dict.fromkeys(self.neighbors))
 
         if len(self.neighbors) == 0:
             return

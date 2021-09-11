@@ -1,4 +1,5 @@
 import random
+from colorsys import hsv_to_rgb
 
 
 class Cell:
@@ -41,3 +42,16 @@ class Cell:
     def set_biom(self, new_biom_name, color_range):
         self.level_2 = new_biom_name
         self.set_color_from_range(color_range)
+
+    def from_hsv_to_rgb(self, hsv):
+
+        rgb = hsv_to_rgb(
+            float(hsv[0]) / 360.0,
+            float(hsv[1]) / 100.0,
+            float(hsv[2]) / 100.0,
+        )
+        return (
+            int(rgb[0] * 255 + 0.5),
+            int(rgb[1] * 255 + 0.5),
+            int(rgb[2] * 255 + 0.5),
+        )

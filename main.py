@@ -8,10 +8,10 @@ from terrains.__read_terrains__ import read_terrains
 # HEIGHT, WIDTH = 100, 200
 # MAP_TYPE = "VORONOI"  # HEX|VORONOI
 
-HEIGHT, WIDTH = 50, 25
+HEIGHT, WIDTH = 80, 100
 MAP_TYPE = "HEX"  # HEX|VORONOI
 
-size = 100
+size = 400
 
 worldMap = Map(WIDTH, HEIGHT, size, MAP_TYPE)
 
@@ -38,36 +38,36 @@ worldMap = Map(WIDTH, HEIGHT, size, MAP_TYPE)
 
 # HEX
 
-continent1 = Continent((25, 12), "Asia", worldMap)
+continent1 = Continent((40, 50), "Asia", worldMap)
 # continent2 = Continent((150, 150), "Europe")
 # continent3 = Continent((100, 100), "America")
-for i in range(15):
+for i in range(300):
     continent1.increase_territory(worldMap, 10)
     # continent2.increase_territory(worldMap, 10)
     # continent3.increase_territory(worldMap, 5)
 
 terrains = read_terrains()
 
-terrain1 = Terrain((25, 12), "A", "Plain", worldMap, terrains)
-# terrain2 = Terrain((104, 50), "B", "Mountain", worldMap, terrains)
-# terrain3 = Terrain((97, 52), "C", "Hill", worldMap, terrains)
+terrain1 = Terrain((45, 54), "A", "Plain", worldMap, terrains)
+terrain2 = Terrain((50, 45), "B", "Mountain", worldMap, terrains)
+terrain3 = Terrain((40, 45), "C", "Hill", worldMap, terrains)
 # terrain4 = Terrain((110, 55), "D", "Mountain", worldMap, terrains)
 # terrain5 = Terrain((105, 45), "E", "Plain", worldMap, terrains)
 # terrain6 = Terrain((95, 45), "F", "Mountain", worldMap, terrains)
 # terrain7 = Terrain((100, 51), "G", "Hill", worldMap, terrains)
 
-for i in range(20):
+for i in range(250):
     terrain1.increase_territory(worldMap, 10)
-    # terrain2.increase_territory(worldMap, 10)
-    # terrain3.increase_territory(worldMap, 10)
+    terrain2.increase_territory(worldMap, 10)
+    terrain3.increase_territory(worldMap, 10)
     # terrain4.increase_territory(worldMap, 10)
     # terrain5.increase_territory(worldMap, 10)
     # terrain6.increase_territory(worldMap, 10)
     # terrain7.increase_territory(worldMap, 10)
 
 terrain1.set_height(worldMap)
-# terrain2.set_height(worldMap)
-# terrain3.set_height(worldMap)
+terrain2.set_height(worldMap)
+terrain3.set_height(worldMap)
 # terrain4.set_height(worldMap)
 # terrain5.set_height(worldMap)
 # terrain6.set_height(worldMap)
@@ -111,5 +111,5 @@ for i in range(HEIGHT):
         draw.text((y - 10, x + 10), "%s" % worldMap.cells[i][j].level_0)
         draw.text((y - 10, x + 20), "%s" % worldMap.cells[i][j].level_1)
 
-print(continent1.coords_arr)
+
 img.save(r"map.png", "PNG")
