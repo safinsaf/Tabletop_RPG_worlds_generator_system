@@ -13,6 +13,8 @@ class Map:
     cells = []
     map_type = ""  # HEX|VORONOI
     # cells = [[Cell, Cell],[Cell, Cell]]
+    rivers = []
+    cities = []
 
     def __init__(self, w=500, h=300, size=30, map_type="VORONOI"):
         self.W = w
@@ -69,9 +71,9 @@ class Map:
                 d = self.__voronoi_neighbors__()
             elif self.map_type == "HEX":
                 if el[0] % 2 == 0:
-                    d = self.__hex_odd_neighbors__()
-                elif el[0] % 2 == 1:
                     d = self.__hex_even_neighbors__()
+                elif el[0] % 2 == 1:
+                    d = self.__hex_odd_neighbors__()
             possible_neighbors = []
             for (dx, dy) in d:
                 possible_neighbors.append((el[0] + dx, el[1] + dy))
@@ -104,8 +106,8 @@ class Map:
     def __create_voronoi__(self, centers):
 
         centers_merged = []
-        for i in range(self.H + 2):
-            for j in range(self.W + 2):
+        for i in range(self.H):
+            for j in range(self.W):
                 centers_merged.append(centers[i][j])
         voronoi = Voronoi(centers_merged)
 
@@ -115,16 +117,16 @@ class Map:
 
         cell_regions = [[[] for j in range(self.W)] for i in range(self.H)]
 
-        for row in range(1, self.H + 1):
-            for col in range(1, self.W + 1):
-                cur_ind = point_region[row * (self.W + 2) + col]
+        for row in range(self.H):
+            for col in range(self.W):
+                cur_ind = point_region[row * (self.W) + col]
                 cur_reg = regions[cur_ind]
                 for el in cur_reg:
 
                     point = vertices[el]
                     point = tuple(point)
                     # point = (point[1], point[0])
-                    cell_regions[row - 1][col - 1].append(point)
+                    cell_regions[row][col].append(point)
 
         return cell_regions
 
@@ -145,29 +147,23 @@ class Map:
         return cells
 
     def __generate_voronoi_map__(self):
-        centers = [
-            [self.__grid__(i - 1, j - 1) for j in range(self.W + 2)]
-            for i in range(self.H + 2)
-        ]
+        centers = [[self.__grid__(i, j) for j in range(self.W)] for i in range(self.H)]
 
         cell_borders = self.__create_voronoi__(centers)
 
-        centers = [
-            [centers[i][j] for j in range(1, self.W + 1)] for i in range(1, self.H + 1)
-        ]
+        # centers = [
+        #     [centers[i][j] for j in range(self.W)] for i in range(self.H)
+        # ]
 
         self.cells = self.__create_cells__(centers, cell_borders)
 
     def __generate_hex_map__(self):
-        centers = [
-            [self.__grid__(i - 1, j - 1) for j in range(self.W + 2)]
-            for i in range(self.H + 2)
-        ]
+        centers = [[self.__grid__(i, j) for j in range(self.W)] for i in range(self.H)]
 
         cell_borders = []
-        for i in range(self.H + 2):
+        for i in range(self.H):
             cell_borders.append([])
-            for j in range(self.W + 2):
+            for j in range(self.W):
                 cur_center = centers[i][j]
                 a = sqrt(3) / 4
                 b = 1 / 4
@@ -187,13 +183,13 @@ class Map:
 
                 cell_borders[i].append(cur_borders)
 
-        centers = [
-            [centers[i][j] for j in range(1, self.W + 1)] for i in range(1, self.H + 1)
-        ]
-        cell_borders = [
-            [cell_borders[i][j] for j in range(1, self.W + 1)]
-            for i in range(1, self.H + 1)
-        ]
+        # centers = [
+        #     [centers[i][j] for j in range(1, self.W + 1)] for i in range(1, self.H + 1)
+        # ]
+        # cell_borders = [
+        #     [cell_borders[i][j] for j in range(1, self.W + 1)]
+        #     for i in range(1, self.H + 1)
+        # ]
         self.cells = self.__create_cells__(centers, cell_borders)
 
     def in_map(self, x, y):
@@ -216,3 +212,15 @@ class Map:
             self.__generate_voronoi_map__()
         elif self.map_type == "HEX":
             self.__generate_hex_map__()
+
+    def integrate_rivers(self):
+        for i in range(len(self.rivers)):
+            for j in range(i + 1, len(self.rivers)):
+                river1 = self.rivers[i]
+                river2 = self.rivers[j]
+                if river1.intersect(river2):
+                    river1.merge(river2)
+
+        for i in range(len(self.rivers)):
+            for (x, y) in self.rivers[i].path:
+                self.cells[x][y].river = True

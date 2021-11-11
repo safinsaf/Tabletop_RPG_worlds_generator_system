@@ -12,8 +12,8 @@ class Terrain:
     color_range = [(0, 0), (0, 0), (0, 0), (0, 0)]
 
     all_heights = [1, 2, 3, 4, 5]
-    plain_distribution = [0.7, 0.3, 0, 0, 0]
-    hill_distribution = [0.1, 0.7, 0.2, 0, 0]
+    plain_distribution = [0.9, 0.1, 0, 0, 0]
+    hill_distribution = [0.0, 0.6, 0.4, 0, 0]
     mountain_distribution = [0.0, 0.05, 0.25, 0.3, 0.4]
 
     def __init__(self, start_coords, name, terrain_type, world_map, terrains):

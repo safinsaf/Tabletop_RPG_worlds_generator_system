@@ -11,6 +11,8 @@ class Cell:
     level_0 = "Ocean"  # "Ocean|$(name)"
     level_1 = "Terrain"  # "Terrain|$(name)"
     level_2 = "Biom"  # "Biom|$(name)"
+    river = False
+    city = "NoCity"
 
     def __init__(self, center, borders):
         self.center = center

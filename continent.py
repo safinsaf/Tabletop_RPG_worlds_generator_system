@@ -5,7 +5,6 @@ class Continent:
 
     start_coords = []
     coords_arr = [(10, 10), (10, 11), (11, 10)]
-    coords_dic = []
     neighbors = []
     color_range = ((30, 50), (200, 220), (0, 10), (200, 210))  # RGBA ranges for random
     # name = "Africa"
@@ -27,13 +26,11 @@ class Continent:
         return world_map.in_map(x, y) and world_map.cells[x][y].level_0 == "Ocean"
 
     def __increase_territory__(self, world_map):
-        (x, y) = self.neighbors.pop()
-        world_map.cells[x][y].set_continent(self.name, self.color_range)
-        self.coords_arr.append((x, y))
+        cell = self.neighbors.pop()
+        self.__add_to_continent__(cell, world_map)
 
     def increase_territory(self, world_map, times):
-        self.neighbors = world_map.__find_neighbors__(self)
-        # self.neighbors = list(dict.fromkeys(self.neighbors))
+        self.update_neighbors(world_map)
 
         if len(self.neighbors) == 0:
             return
@@ -50,5 +47,76 @@ class Continent:
         if left != 0:
             self.increase_territory(world_map, left)
 
+    def __add_to_continent__(self, cell, world_map):
+        (x, y) = cell
+        world_map.cells[x][y].set_continent(self.name, self.color_range)
+        self.coords_arr.append((x, y))
+
+    def fill_holes(self, world_map):
+        is_last = True
+
+        coasts = world_map.__find_neighbors__(self)
+        coasts = list(dict.fromkeys(coasts))
+
+        components = self.__connectivity_components__(coasts, world_map)
+        counter = {}
+        for i in range(len(components)):
+            if components[i] not in counter:
+                counter[components[i]] = 0
+            counter[components[i]] += 1
+        items = counter.items()
+        items = [(y, x) for (x, y) in items]
+        items = sorted(items)
+        main_component = items[-1][1]
+        # print(items)
+
+        for i in range(0, len(components)):
+            if components[i] == main_component:
+                continue
+
+            cell = coasts[i]
+            self.__add_to_continent__(cell, world_map)
+            is_last = False
+        # if not is_last:
+        #    self.fill_holes(world_map)
+
+    def __connectivity_components__(self, coasts, world_map):
+        vertices = coasts
+        edges = [[] for i in range(len(vertices))]
+        for i in range(len(vertices)):
+            for j in range(len(vertices)):
+                if i == j:
+                    continue
+                neighbors_i = world_map.__find_all_neighbors__([vertices[i]])
+                if vertices[j] not in neighbors_i:
+                    continue
+                edges[i].append(j)
+                edges[j].append(i)
+
+        components = [-1] * len(vertices)
+        number_of_components = 0
+        for vertex in range(len(vertices)):
+            if components[vertex] != -1:
+                continue
+            path = [vertex]
+            components[vertex] = number_of_components
+            while len(path) > 0:
+                current = path[-1]
+                for i in range(len(edges[current])):
+                    neighbor = edges[current][i]
+                    if components[neighbor] == -1:
+                        path.append(neighbor)
+                        components[neighbor] = number_of_components
+                        break
+                else:
+                    path.pop()
+            number_of_components += 1
+
+        return components
+
     def set_color_range(self, new_color_range):
         self.color_range = new_color_range
+
+    def update_neighbors(self, world_map):
+        self.neighbors = world_map.__find_neighbors__(self)
+        self.neighbors = list(dict.fromkeys(self.neighbors))
