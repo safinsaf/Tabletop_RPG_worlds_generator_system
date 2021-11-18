@@ -26,27 +26,27 @@ class Biom:
 
         self.__set_default_color_range__()
 
+    def is_restricted(self, x, y, world_map):
+        return world_map.cells[x][y].terrain_type in self.bioms[self.biom_type]["RestrictedTerrains"]
+
     def __free__(self, x, y, world_map):
         return (
             world_map.in_map(x, y)
             and world_map.cells[x][y].level_0 != "Ocean"
-            and world_map.cells[x][y].level_1 == "Biom"
+            and world_map.cells[x][y].level_1 != "Terrain"
+            and not self.is_restricted(x, y, world_map)
+            and world_map.cells[x][y].level_2 == "Biom"
         )
 
     def __increase_territory__(self, world_map):
         new_cell = self.neighbors.pop()
         (x, y) = new_cell
-        R = random.randint(self.color_range[0][0], self.color_range[0][1])
-        G = random.randint(self.color_range[1][0], self.color_range[1][1])
-        B = random.randint(self.color_range[2][0], self.color_range[2][1])
-        A = random.randint(self.color_range[3][0], self.color_range[3][1])
-        world_map.cells[x][y].set_biom(self.name, (R, G, B, A))
+        world_map.cells[x][y].set_biom(self.name, self.color_range)
         self.coords_arr.append((x, y))
 
     def increase_territory(self, world_map, times):
         self.neighbors = world_map.__find_neighbors__(self)
         random.shuffle(self.neighbors)
-
         size = min(times, len(self.neighbors))
         if size == 0:
             return

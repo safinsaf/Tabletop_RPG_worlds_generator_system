@@ -5,6 +5,7 @@
     "G_left": 160, "G_right": 170,
     "B_left": 30, "B_right": 40,
     "A_left": 100, "A_right": 120
-  }
+  },
+  "RestrictedTerrains": []
 }
 

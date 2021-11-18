@@ -2,7 +2,7 @@ import random
 
 
 class City:
-    def __init__(self, world_map, continent, name):
+    def __init__(self, name, continent, world_map):
         self.name = name
         points = continent.coords_arr
         random.shuffle(points)

@@ -7,7 +7,10 @@ from continent import Continent
 from map import Map
 from river import River
 from terrain import Terrain
+from biom import Biom
 from terrains.__read_terrains__ import read_terrains
+from plugins.__read_bioms__ import read_bioms
+from races.__read_races__ import read_races
 
 # HEIGHT, WIDTH = 100, 200
 # MAP_TYPE = "VORONOI"  # HEX|VORONOI
@@ -29,8 +32,16 @@ def draw_map(map_name):
         for j in range(WIDTH):
             draw.polygon(
                 [(y, x) for (x, y) in world_map.cells[i][j].borders],
-                fill=world_map.cells[i][j].color,
+                fill=world_map.cells[i][j].color
             )
+            if world_map.cells[i][j].border_color != (-1, -1, -1, -1):
+                polygon = world_map.cells[i][j].borders
+                polygon.append(world_map.cells[i][j].borders[0])
+                draw.line(
+                    [(y, x) for (x, y) in polygon],
+                    fill=world_map.cells[i][j].border_color,
+                    width=10
+                )
             (x, y) = world_map.cells[i][j].center
             draw.text((y - 10, x - 10), str(world_map.cells[i][j].height))
             draw.text((y - 10, x), "%s %s" % (int(i), int(j)))
@@ -144,29 +155,28 @@ world_map.integrate_rivers()
 
 cities = []
 for i in range(20):
-    city = City(world_map, continent1, "city" + str(i))
+    city = City("city" + str(i), continent1, world_map)
     cities.append(city)
 world_map.cities = cities
 
 
 draw_map("after.png")
 
-# bioms = read_bioms()
+bioms = read_bioms()
 
-# biom1 = Biom((100, 45), "Forest A", "Forest", bioms)
-# biom2 = Biom((150, 145), "Swamp B", "Swamp", bioms)
-# biom3 = Biom((95, 100), "Desert C", "Desert", bioms)
-# biom4 = Biom((95, 50), "Tundra A", "Tundra", bioms)
-# biom5 = Biom((145, 150), "Mountain B", "Mountain", bioms)
-# biom6 = Biom((100, 105), "Hill C", "Hill", bioms)
-# biom7 = Biom((100, 55), "Mountain C", "Mountain", bioms)
+biom1 = Biom((45, 45), "Forest A", "Forest", bioms)
+biom2 = Biom((50, 60), "Swamp B", "Swamp", bioms)
+biom3 = Biom((55, 55), "Desert C", "Desert", bioms)
+biom4 = Biom((60, 35), "Tundra A", "Tundra", bioms)
+
+print(dir(world_map.cells[45][45]))
+
+for i in range(100):
+    biom1.increase_territory(world_map, 10)
+    biom2.increase_territory(world_map, 10)
+    biom3.increase_territory(world_map, 5)
+    biom4.increase_territory(world_map, 10)
 
 
-# for i in range(100):
-#     biom1.increase_territory(world_map, 10)
-#     biom2.increase_territory(world_map, 10)
-#     biom3.increase_territory(world_map, 5)
-#     biom4.increase_territory(world_map, 10)
-#     biom5.increase_territory(world_map, 10)
-#     biom6.increase_territory(world_map, 10)
-#     biom7.increase_territory(world_map, 10)
+
+draw_map("bioms.png")

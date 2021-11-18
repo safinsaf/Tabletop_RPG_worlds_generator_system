@@ -1,0 +1,16 @@
+{
+  "Cities": {
+    "Attractors": {
+      "Unique": {
+        "River": 100,
+        "City": -100
+      },
+      "Bioms": {
+        "Desert": -100
+      },
+      "Terrains": {
+        "Mountain": 100
+      }
+    }
+  }
+}

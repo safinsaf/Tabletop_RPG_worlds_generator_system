@@ -7,6 +7,7 @@ class Cell:
     center = (0, 0)
     borders = [(0, 0), (0, 0), (0, 0), (0, 0)]
     color = (0, 0, 0, 0)
+    border_color = (-1, -1, -1, -1)
     terrain_type = ""  # Plain|Hill|Mountain
     level_0 = "Ocean"  # "Ocean|$(name)"
     level_1 = "Terrain"  # "Terrain|$(name)"
@@ -32,6 +33,16 @@ class Cell:
         A = random.randint(color_range[3][0], color_range[3][1])
         self.set_color((R, G, B, A))
 
+    def set_border_color(self, new_color):
+        self.border_color = new_color
+
+    def set_border_color_from_range(self, color_range):
+        R = random.randint(color_range[0][0], color_range[0][1])
+        G = random.randint(color_range[1][0], color_range[1][1])
+        B = random.randint(color_range[2][0], color_range[2][1])
+        A = random.randint(color_range[3][0], color_range[3][1])
+        self.set_border_color((R, G, B, A))
+
     def set_continent(self, new_continent_name, color_range):
         self.level_0 = new_continent_name
         self.set_color_from_range(color_range)
@@ -43,7 +54,7 @@ class Cell:
 
     def set_biom(self, new_biom_name, color_range):
         self.level_2 = new_biom_name
-        self.set_color_from_range(color_range)
+        self.set_border_color_from_range(color_range)
 
     def from_hsv_to_rgb(self, hsv):
 
