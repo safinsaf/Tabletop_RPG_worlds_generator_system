@@ -9,11 +9,12 @@ class Cell:
     color = (0, 0, 0, 0)
     border_color = (-1, -1, -1, -1)
     terrain_type = ""  # Plain|Hill|Mountain
+    biom_type = ""
     level_0 = "Ocean"  # "Ocean|$(name)"
     level_1 = "Terrain"  # "Terrain|$(name)"
     level_2 = "Biom"  # "Biom|$(name)"
     river = False
-    city = "NoCity"
+    city = "City"
 
     def __init__(self, center, borders):
         self.center = center
@@ -52,8 +53,9 @@ class Cell:
         self.terrain_type = terrain_type
         self.set_color_from_range(color_range)
 
-    def set_biom(self, new_biom_name, color_range):
+    def set_biom(self, new_biom_name, color_range, biom_type):
         self.level_2 = new_biom_name
+        self.biom_type = biom_type
         self.set_border_color_from_range(color_range)
 
     def from_hsv_to_rgb(self, hsv):

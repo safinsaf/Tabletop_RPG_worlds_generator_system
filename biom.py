@@ -41,7 +41,7 @@ class Biom:
     def __increase_territory__(self, world_map):
         new_cell = self.neighbors.pop()
         (x, y) = new_cell
-        world_map.cells[x][y].set_biom(self.name, self.color_range)
+        world_map.cells[x][y].set_biom(self.name, self.color_range, self.biom_type)
         self.coords_arr.append((x, y))
 
     def increase_territory(self, world_map, times):

@@ -224,3 +224,14 @@ class Map:
         for i in range(len(self.rivers)):
             for (x, y) in self.rivers[i].path:
                 self.cells[x][y].river = True
+
+
+    def rivers_finalize(self):
+
+        self.integrate_rivers()
+
+        for i in range(len(self.rivers)):
+            for j in range(len(self.rivers[i].path)):
+                (x, y) = self.rivers[i].path[j]
+                print(self.cells[i][j].river == False)
+                self.cells[i][j].river = True

@@ -2,7 +2,7 @@ import random
 
 
 class City:
-    def __init__(self, name, continent, world_map):
+    def __init2__(self, name, continent, world_map, coords=(-1, -1)):
         self.name = name
         points = continent.coords_arr
         random.shuffle(points)
@@ -38,3 +38,116 @@ class City:
         for (x, y) in suburb:
             if world_map.cells[x][y].city == "NoCity":
                 world_map.cells[x][y].city = self.name + "Suburb"
+
+    def assign_initial_coords(self, coords, continent):
+        if coords == (-1,-1):
+            points = continent.coords_arr
+            random.shuffle(points)
+            coords = points[0]
+        return coords
+
+
+    def find_local(self, coords, r, continent, world_map):
+        locals = [[coords]]
+        for i in range(r):
+            new_wave = []
+            for coord in locals[i]:
+                new_neighbors = world_map.__find_all_neighbors__([coord])
+                new_wave += new_neighbors
+            new_wave = set(new_wave)
+            for j in range(i+1):
+                new_wave -= set(locals[j])
+            locals.append(list(new_wave))
+        return locals
+
+    def compute_func(self, value, level):
+        return value * (0.7)**level
+
+    def compute_attraction(self, locals, continent, world_map):
+        weight = 0
+        attractors = self.races[self.race]["Cities"]["Attractors"]
+        unique = attractors["Unique"]
+        bioms = attractors["Bioms"]
+        terrains = attractors["Terrains"]
+
+
+        for level in range(len(locals)):
+            for coord in locals[level]:
+                (x, y) = coord
+                if world_map.cells[x][y].level_0 == "Ocean" and \
+                        "Ocean" in unique:
+                    weight += self.compute_func(unique["Ocean"], level)
+                if world_map.cells[x][y].river and \
+                        "River" in unique:
+                    weight += self.compute_func(unique["River"], level)
+                if world_map.cells[x][y].city != "City" and \
+                        "City" in unique:
+                    weight += self.compute_func(unique["City"], level)
+                if world_map.cells[x][y].level_2 != "Biom" and \
+                        world_map.cells[x][y].level_2 in bioms:
+                    weight += self.compute_func(bioms[world_map.cells[x][y].level_2], level)
+
+
+        print(locals[0][0], weight)
+        return weight
+
+
+    def search_max_placement(self, coords, depth1, depth2, continent, world_map):
+        jump_neighbors = self.find_local(coords, depth1, continent, world_map)
+        computation_neighbors = self.find_local(coords, depth2, continent, world_map)
+        weight = self.compute_attraction(computation_neighbors, continent, world_map)
+
+        max_weight = -1e10
+        max_coords = coords
+        for level in range(1, len(jump_neighbors)):
+            for j in range(len(jump_neighbors[level])):
+                new_coords = jump_neighbors[level][j]
+                (x, y) = new_coords
+                if world_map.cells[x][y].level_0 == "Ocean":
+                    continue
+                new_locals = self.find_local(new_coords, depth2, continent, world_map)
+                new_weight = self.compute_attraction(new_locals, continent, world_map)
+                if new_weight > max_weight:
+                    max_weight = new_weight
+                    max_coords = new_coords
+        print(jump_neighbors[0][0], max_coords)
+        print(max_weight)
+        if jump_neighbors[0][0] == max_coords:
+            print("Out")
+            return max_coords
+        elif max_weight > weight:
+            return self.search_max_placement(max_coords, depth1, depth2, continent, world_map)
+        else:
+            print("Out2")
+            return max_coords
+
+    def grow_city(self, max_coords, world_map, size = 3):
+        (x1, y1) = max_coords
+        self.points = [max_coords]
+        height = world_map.cells[x1][y1].height
+        neighbors = world_map.__find_all_neighbors__([(x1, y1)])
+        random.shuffle(neighbors)
+        for (x2, y2) in neighbors:
+            if world_map.cells[x2][y2].level_0 == "Ocean":
+                continue
+            if world_map.cells[x2][y2].city != "City":
+                continue
+            if world_map.cells[x2][y2].height == height:
+                self.points.append((x2, y2))
+
+            if len(self.points) == size:
+                return
+
+    def __init__(self, name, continent, world_map, races, race="Human", coords=(-1, -1)):
+        self.name = name
+        self.race = race
+        self.races = races
+        coords = self.assign_initial_coords(coords, continent)
+        coords = self.search_max_placement(coords, 10, 4, continent, world_map)
+        (x, y) = coords
+        self.grow_city(coords, world_map, 3)
+        world_map.cells[x][y].city = self.name
+
+
+
+

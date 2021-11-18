@@ -142,7 +142,6 @@ terrain3.set_height(world_map)
 for i in range(20):
     river = River(world_map, continent1)
     world_map.rivers.append(river)
-    print(f"{i} is done")
 #
 # for i in range(len(world_map.rivers)):
 #      for j in range(i+1, len(world_map.rivers)):
@@ -151,11 +150,14 @@ for i in range(20):
 #          if river1.intersect(river2):
 #              river1.merge(river2)
 
-world_map.integrate_rivers()
+world_map.rivers_finalize()
+
+
+races = read_races()
 
 cities = []
 for i in range(20):
-    city = City("city" + str(i), continent1, world_map)
+    city = City("city" + str(i), continent1, world_map, races, "Human")
     cities.append(city)
 world_map.cities = cities
 
