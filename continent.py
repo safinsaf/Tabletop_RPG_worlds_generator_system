@@ -120,3 +120,15 @@ class Continent:
     def update_neighbors(self, world_map):
         self.neighbors = world_map.__find_neighbors__(self)
         self.neighbors = list(dict.fromkeys(self.neighbors))
+
+    def __find_all_coasts__(self, world_map):
+        coasts = []
+        for (x, y) in self.coords_arr:
+            neighbors = world_map.__find_all_neighbors__([(x, y)])
+            is_edge = any(
+                world_map.cells[i][j].level_0 == "Ocean" for (i, j) in neighbors
+            )
+            if not is_edge:
+                continue
+            coasts.append((x, y))
+        return coasts

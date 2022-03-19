@@ -65,7 +65,7 @@ class City:
         return locals
 
     def compute_func(self, value, level):
-        return value * (0.7)**level
+        return value * (0.7)**level + max(1-level, 0) * 10 * value
 
     def compute_attraction(self, locals, continent, world_map):
         weight = 0
@@ -97,6 +97,8 @@ class City:
 
 
     def search_max_placement(self, coords, depth1, depth2, continent, world_map):
+        # depth1 - 
+        # depth2 - 
         jump_neighbors = self.find_local(coords, depth1, continent, world_map)
         computation_neighbors = self.find_local(coords, depth2, continent, world_map)
         weight = self.compute_attraction(computation_neighbors, continent, world_map)
@@ -147,15 +149,15 @@ class City:
         self.race = race
         self.races = races
         coords = self.assign_initial_coords(coords, continent)
-        coords = self.search_max_placement(coords, 10, 4, continent, world_map)
+        coords = self.search_max_placement(coords, 10, 6, continent, world_map)
         (x, y) = coords
         self.grow_city(coords, world_map, 3)
         world_map.cells[x][y].city = self.name
-        self.create_port_optional(world_map)
+        self.create_port_optional(continent, world_map)
 
 
 
-    def create_port_optional(self,world_map):
+    def create_port_optional(self,continent,world_map):
         for i in range(len(self.points)):
             (x,y) = self.points[i]
             print("checking point", (x,y))
@@ -163,20 +165,22 @@ class City:
             print("    terrain type", world_map.cells[x][y].terrain_type)
             if world_map.cells[x][y].river and world_map.cells[x][y].terrain_type != "Mountain":
                 #print("city_points", self.points)
-                print("port_point:", (x,y))
+                print("river port_point:", (x,y))
                 #print("river:", world_map.cells[x][y].river)
                 self.__create_port__((x,y))
                 return True
-        return False
-    
+            
 
+            coasts = continent.__find_all_coasts__(world_map)
+            if (x,y) in coasts:
+                print("sea port_point:", (x,y))
+                self.__create_port__((x,y))
+                return True
+
+            
+        return False
 
 
     def __create_port__(self, point):
-        #if not point in self.point:
-        #    print("Wrong call of __create_port__ function")
-        #    print("Point:", point)
-        #    print("City:", self.points)
-        #    return False
         self.port = point
         

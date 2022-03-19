@@ -146,7 +146,7 @@ terrain3.set_height(world_map)
 # terrain6.set_height(world_map)
 # terrain7.set_height(world_map)
 
-for i in range(20):
+for i in range(40):
     river = River(world_map, continent1)
     world_map.rivers.append(river)
 #
@@ -163,7 +163,7 @@ world_map.rivers_finalize()
 races = read_races()
 
 cities = []
-for i in range(20):
+for i in range(50):
     city = City("city" + str(i), continent1, world_map, races, "Human")
     cities.append(city)
 world_map.cities = cities

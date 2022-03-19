@@ -7,7 +7,7 @@ class River:
 
     def __init__(self, world_map, continent):
         mountains = self.__find_all_sources__(continent, world_map)
-        coasts = self.__find_all_coasts__(continent, world_map)
+        coasts = continent.__find_all_coasts__(world_map)
         while True:
             mountain = mountains[random.randint(0, len(mountains) - 1)]
             coast = coasts[random.randint(0, len(coasts) - 1)]
@@ -53,18 +53,6 @@ class River:
         next_point = right_neighbors[random.randint(0, len(right_neighbors) - 1)]
         return next_point
 
-
-    def __find_all_coasts__(self, continent, world_map):
-        coasts = []
-        for (x, y) in continent.coords_arr:
-            neighbors = world_map.__find_all_neighbors__([(x, y)])
-            is_edge = any(
-                world_map.cells[i][j].level_0 == "Ocean" for (i, j) in neighbors
-            )
-            if not is_edge:
-                continue
-            coasts.append((x, y))
-        return coasts
 
     def __find_all_sources__(self, continent, world_map):
         max_height = 0

@@ -93,7 +93,7 @@ class Terrain:
             elif self.terrain_type == "Hill":
                 world_map.cells[x][y].set_height(2)
             elif self.terrain_type == "Mountain":
-                world_map.cells[x][y].set_height(2)
+                world_map.cells[x][y].set_height(3)
             elif self.terrain_type == "Plain" and (
                 "Mountain" in neighbors_types or "Hill" in neighbors_types
             ):

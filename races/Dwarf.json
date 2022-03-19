@@ -3,7 +3,8 @@
     "Attractors": {
       "Unique": {
         "River": 100,
-        "City": -100
+        "City": -10000,
+        "Ocean": 100
       },
       "Bioms": {
         "Desert": -100
