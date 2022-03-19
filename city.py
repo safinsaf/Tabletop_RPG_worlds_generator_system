@@ -2,6 +2,10 @@ import random
 
 
 class City:
+    name = ""
+    point = [] #[(x1, y1),(x2,x2),(x3,y3)]
+    port = False # False or (x, y)
+
     def __init2__(self, name, continent, world_map, coords=(-1, -1)):
         self.name = name
         points = continent.coords_arr
@@ -88,7 +92,7 @@ class City:
                     weight += self.compute_func(bioms[world_map.cells[x][y].level_2], level)
 
 
-        print(locals[0][0], weight)
+        #print(locals[0][0], weight)
         return weight
 
 
@@ -110,15 +114,15 @@ class City:
                 if new_weight > max_weight:
                     max_weight = new_weight
                     max_coords = new_coords
-        print(jump_neighbors[0][0], max_coords)
-        print(max_weight)
+        #print(jump_neighbors[0][0], max_coords)
+        #print(max_weight)
         if jump_neighbors[0][0] == max_coords:
-            print("Out")
+            #print("Out")
             return max_coords
         elif max_weight > weight:
             return self.search_max_placement(max_coords, depth1, depth2, continent, world_map)
         else:
-            print("Out2")
+            #print("Out2")
             return max_coords
 
     def grow_city(self, max_coords, world_map, size = 3):
@@ -147,7 +151,32 @@ class City:
         (x, y) = coords
         self.grow_city(coords, world_map, 3)
         world_map.cells[x][y].city = self.name
+        self.create_port_optional(world_map)
 
 
 
+    def create_port_optional(self,world_map):
+        for i in range(len(self.points)):
+            (x,y) = self.points[i]
+            print("checking point", (x,y))
+            print("    river:", world_map.cells[x][y].river)
+            print("    terrain type", world_map.cells[x][y].terrain_type)
+            if world_map.cells[x][y].river and world_map.cells[x][y].terrain_type != "Mountain":
+                #print("city_points", self.points)
+                print("port_point:", (x,y))
+                #print("river:", world_map.cells[x][y].river)
+                self.__create_port__((x,y))
+                return True
+        return False
+    
 
+
+
+    def __create_port__(self, point):
+        #if not point in self.point:
+        #    print("Wrong call of __create_port__ function")
+        #    print("Point:", point)
+        #    print("City:", self.points)
+        #    return False
+        self.port = point
+        

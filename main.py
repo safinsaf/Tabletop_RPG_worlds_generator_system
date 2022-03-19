@@ -18,7 +18,7 @@ from races.__read_races__ import read_races
 HEIGHT, WIDTH = 80, 100
 MAP_TYPE = "HEX"  # HEX|VORONOI
 
-size = 100
+size = 50
 
 world_map = Map(WIDTH, HEIGHT, size, MAP_TYPE)
 
@@ -45,8 +45,8 @@ def draw_map(map_name):
             (x, y) = world_map.cells[i][j].center
             draw.text((y - 10, x - 10), str(world_map.cells[i][j].height))
             draw.text((y - 10, x), "%s %s" % (int(i), int(j)))
-            draw.text((y - 10, x + 10), "%s" % world_map.cells[i][j].level_0)
-            draw.text((y - 10, x + 20), "%s" % world_map.cells[i][j].level_1)
+            #draw.text((y - 10, x + 10), "%s" % world_map.cells[i][j].level_0)
+            #draw.text((y - 10, x + 20), "%s" % world_map.cells[i][j].level_1)
 
     for river_obj in world_map.rivers:
         river = river_obj.path
@@ -72,6 +72,13 @@ def draw_map(map_name):
             draw.rectangle(
                 (y_center - 10, x_center - 10, y_center + 10, x_center + 10),
                 fill=(255, 0, 0),
+            )
+        if city_obj.port:
+            (port_x, port_y) = city_obj.port
+            (port_x_center, port_y_center) = world_map.cells[port_x][port_y].center
+            draw.rectangle(
+                (port_y_center - 5, port_x_center - 5, port_y_center + 5, port_x_center + 5),
+                fill=(0, 0, 255),
             )
 
     time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")

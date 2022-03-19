@@ -14,8 +14,18 @@ class River:
 
             path = self.__try_find_path__(coast, mountain, world_map, continent)
             if path:
-                self.path = path
                 break
+        
+        #connect to the Ocean
+        neighbors = world_map.__find_all_neighbors__([coast])
+        neighbor_ocean = 0
+        for (i, j) in neighbors:
+            if world_map.cells[i][j].level_0 == "Ocean":
+                neighbor_ocean = (i, j)
+                break
+        path = [neighbor_ocean] + path
+        self.path = path
+
 
     def __next_point__(self, current_point, final_point, world_map):
 
@@ -42,6 +52,7 @@ class River:
             return None
         next_point = right_neighbors[random.randint(0, len(right_neighbors) - 1)]
         return next_point
+
 
     def __find_all_coasts__(self, continent, world_map):
         coasts = []
