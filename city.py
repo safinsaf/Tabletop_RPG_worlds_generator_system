@@ -3,7 +3,7 @@ import random
 
 class City:
     name = ""
-    point = [] #[(x1, y1),(x2,x2),(x3,y3)]
+    points = [] #[(x1, y1),(x2,x2),(x3,y3)]
     port = False # False or (x, y)
 
     def __init2__(self, name, continent, world_map, coords=(-1, -1)):
@@ -153,6 +153,7 @@ class City:
         (x, y) = coords
         self.grow_city(coords, world_map, 3)
         world_map.cells[x][y].city = self.name
+        continent.cities.append(self)
         self.create_port_optional(continent, world_map)
 
 

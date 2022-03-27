@@ -15,6 +15,9 @@ class Map:
     # cells = [[Cell, Cell],[Cell, Cell]]
     rivers = []
     cities = []
+    continents = []
+    all_roads = []
+    odd_roads = []
 
     def __init__(self, w=500, h=300, size=30, map_type="VORONOI"):
         self.W = w
@@ -235,5 +238,117 @@ class Map:
                 (x, y) = self.rivers[i].path[j]
                 self.cells[x][y].river = True
 
-    #def connect_river_cities(self):
+    
+    def __distance__(self, point1, point2):
+        (x1, y1) = point1
+        (x2, y2) = point2
+        (center_x1, center_y1) = self.cells[x1][y1].center
+        (center_x2, center_y2) = self.cells[x2][y2].center
+        dx, dy = abs(center_x2 - center_x1), abs(center_y2 - center_y1)
+        return (dx ** 2 + dy ** 2) ** 0.5
+
+    def create_roads(self, continent):
+        cities = continent.cities
+        radius = self.__calculate_connection__(cities)
+        [all_connections, graph] = self.__create_graph__(cities, radius)
+        self.all_roads += all_connections
+        self.__find_odd_roads__(cities, graph)
+        self.__remove_odd_roads__()
+
+    def __calculate_connection__(self, cities):
+        sum_distance = self.__sum_of_city_distances__(cities)
+        N = len(cities) * (len(cities) - 1) / 2
+        N = N * 2
+        radius = sum_distance / N
+        return radius
+
+    def __create_graph__(self, cities, radius):
+        graph = [ [0]*len(cities) for i in range(len(cities))]
+        all_connections = []
+
+        for i in range(len(cities)):
+            for j in range(len(cities)):
+                point1 = cities[i].points[0]
+                point2 = cities[j].points[0]
+                dist = self.__distance__(point1, point2)
+                if dist <= radius:
+                    graph[i][j] = 1
+                    graph[j][i] = 1
+                    all_connections.append((cities[i], cities[j]))
+        return [all_connections, graph]
         
+    
+    def __sum_of_city_distances__(self, cities):
+        sum = 0
+        for i in range(len(cities)):
+            for j in range(i+1, len(cities)):
+                point1 = cities[i].points[0]
+                point2 = cities[j].points[0]
+                sum += self.__distance__(point1, point2)
+        return sum
+
+
+    def __find_odd_roads__(self, cities, graph):
+        odd_roads =[]
+        for c1 in range(len(graph)):
+            for c2 in range(c1+1, len(graph)):
+                for c3 in range(c2+1, len(graph)):
+                    if graph[c1][c2] == 0 or graph[c1][c3] == 0 or graph[c2][c3] == 0: 
+                        continue
+
+                    (city1, city2) = self.__check_triangle__(cities, c1, c2, c3)
+                    if city1 == -1 and city2 == -1:
+                        continue
+
+                    odd_roads.append((cities[city1],cities[city2]))
+                    graph[city1][city2] = 0
+                    
+
+        self.odd_roads += odd_roads
+
+    
+    def __remove_odd_roads__(self):
+        new_all_roads = []
+        for road in self.all_roads:
+            if not road in self.odd_roads:
+                new_all_roads.append(road)
+        self.all_roads = new_all_roads
+        self.odd_roads = []
+
+                    
+        
+    def __check_triangle__(self, cities, c1, c2, c3):
+        triangles = [[c1,c2,c3],[c1,c3,c2],[c2,c1,c3],[c2,c3,c1],[c3,c1,c2],[c3,c2,c1]]
+        for i in range(len(triangles)):
+            city1 = triangles[i][0]
+            city2 = triangles[i][1]
+            city3 = triangles[i][2]
+            
+            (x1, y1) = cities[city1].points[0]
+            (x2, y2) = cities[city2].points[0]
+            (x3, y3) = cities[city3].points[0]
+
+            point1 = self.cells[x1][y1].center
+            point2 = self.cells[x2][y2].center
+            point3 = self.cells[x3][y3].center
+
+            vector1 = [point2[0] - point1[0], point2[1] - point1[1]]
+            vector2 = [point3[0] - point2[0], point3[1] - point2[1]]
+
+            cross_product = vector1[0]*vector2[1] - vector1[1]*vector2[0]  # sign is sign of sin
+            dot_product = vector1[0]*vector2[0] + vector1[1]*vector2[1]    # sign is sign of cos
+            area = self.__distance__((x1, y1),(x2,y2)) * self.__distance__((x2, y2),(x3,y3))
+
+            max_sin = 0.5
+            sin = cross_product / area
+
+            if dot_product >= 0 and sin > 0 and sin <= max_sin:
+                print(cross_product, dot_product, area)
+                odd = (triangles[i][0], triangles[i][2])
+                print(odd)
+                return odd
+
+        return (-1, -1)
+
+
+

@@ -81,6 +81,34 @@ def draw_map(map_name):
                 fill=(0, 0, 255),
             )
 
+    for i in range(len(world_map.all_roads)):
+        (city1, city2) = world_map.all_roads[i]
+        x1 = city1.points[0][0]
+        y1 = city1.points[0][1]
+        x2 = city2.points[0][0]
+        y2 = city2.points[0][1]
+
+        points = [world_map.cells[x1][y1].center, world_map.cells[x2][y2].center]
+        draw.line(
+                [(y, x) for (x, y) in points],
+                fill=(255,255,255),
+                width=5
+                )
+
+    for i in range(len(world_map.odd_roads)):
+        (city1, city2) = world_map.odd_roads[i]
+        x1 = city1.points[0][0]
+        y1 = city1.points[0][1]
+        x2 = city2.points[0][0]
+        y2 = city2.points[0][1]
+
+        points = [world_map.cells[x1][y1].center, world_map.cells[x2][y2].center]
+        draw.line(
+                [(y, x) for (x, y) in points],
+                fill=(255,0,0),
+                width=5
+                )
+
     time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     img.save("images/" + time + "_" + map_name, "PNG")
 
@@ -163,7 +191,7 @@ world_map.rivers_finalize()
 races = read_races()
 
 cities = []
-for i in range(50):
+for i in range(20):
     city = City("city" + str(i), continent1, world_map, races, "Human")
     cities.append(city)
 world_map.cities = cities
@@ -186,6 +214,8 @@ for i in range(100):
     biom3.increase_territory(world_map, 5)
     biom4.increase_territory(world_map, 10)
 
+
+world_map.create_roads(continent1)
 
 
 draw_map("bioms.png")

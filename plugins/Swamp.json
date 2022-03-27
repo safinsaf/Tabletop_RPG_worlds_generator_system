@@ -6,5 +6,6 @@
     "B_left": 20, "B_right": 20,
     "A_left": 50, "A_right": 60
   },
-  "RestrictedTerrains": ["Mountain", "Hill"]
+  "RestrictedTerrains": ["Mountain", "Hill"],
+  "CrossingWeight": 40
 }

@@ -11,5 +11,6 @@
     "S": 40,
     "V_left": 50,
     "V_right": 80
-  }
+  },
+  "CrossingWeight": 10
 }

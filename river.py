@@ -122,8 +122,8 @@ class River:
                 return path_vertices
             for i in range(len(edges[current])):
                 neighbor = edges[current][i]
-                distance1 = self.__distance__(vertices[current], mountain, world_map)
-                distance2 = self.__distance__(vertices[neighbor], mountain, world_map)
+                distance1 = world_map.__distance__(vertices[current], mountain)
+                distance2 = world_map.__distance__(vertices[neighbor], mountain)
 
                 (x1, y1) = vertices[current]
                 (x2, y2) = vertices[neighbor]
@@ -141,11 +141,3 @@ class River:
                 path.pop()
         # no path
         return []
-
-    def __distance__(self, point1, point2, world_map):
-        (x1, y1) = point1
-        (x2, y2) = point2
-        (center_x1, center_y1) = world_map.cells[x1][y1].center
-        (center_x2, center_y2) = world_map.cells[x2][y2].center
-        dx, dy = abs(center_x2 - center_x1), abs(center_y2 - center_y1)
-        return dx ** 2 + dy ** 2

@@ -7,6 +7,7 @@ class Continent:
     coords_arr = [(10, 10), (10, 11), (11, 10)]
     neighbors = []
     color_range = ((30, 50), (200, 220), (0, 10), (200, 210))  # RGBA ranges for random
+    cities = []
     # name = "Africa"
 
     def __init__(self, start_coords, name, world_map):
@@ -21,6 +22,9 @@ class Continent:
             self.coords_arr = [start_coords]
         for (x, y) in self.coords_arr:
             world_map.cells[x][y].set_continent(self.name, self.color_range)
+
+        world_map.continents.append(self)
+
 
     def __free__(self, x, y, world_map):
         return world_map.in_map(x, y) and world_map.cells[x][y].level_0 == "Ocean"
