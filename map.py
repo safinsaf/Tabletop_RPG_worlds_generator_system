@@ -4,6 +4,7 @@ from math import sqrt
 from scipy.spatial import Voronoi
 
 from cell import Cell
+from road import Road
 
 
 class Map:
@@ -16,8 +17,9 @@ class Map:
     rivers = []
     cities = []
     continents = []
-    all_roads = []
-    odd_roads = []
+    all_road_endpoints = []
+    odd_road_endpoints = []
+    roads = []
 
     def __init__(self, w=500, h=300, size=30, map_type="VORONOI"):
         self.W = w
@@ -247,13 +249,17 @@ class Map:
         dx, dy = abs(center_x2 - center_x1), abs(center_y2 - center_y1)
         return (dx ** 2 + dy ** 2) ** 0.5
 
-    def create_roads(self, continent):
+    def create_roads(self, world_map, continent, terrains, bioms):
+        self.terrains = terrains
+        self.bioms = bioms
         cities = continent.cities
         radius = self.__calculate_connection__(cities)
         [all_connections, graph] = self.__create_graph__(cities, radius)
-        self.all_roads += all_connections
-        self.__find_odd_roads__(cities, graph)
-        self.__remove_odd_roads__()
+        self.all_road_endpoints += all_connections
+        self.__find_odd_road_endpoints__(cities, graph)
+        self.__remove_odd_road_endpoints__()
+        self.__create_road_paths__(world_map, continent)
+
 
     def __calculate_connection__(self, cities):
         sum_distance = self.__sum_of_city_distances__(cities)
@@ -267,7 +273,7 @@ class Map:
         all_connections = []
 
         for i in range(len(cities)):
-            for j in range(len(cities)):
+            for j in range(i+1, len(cities)):
                 point1 = cities[i].points[0]
                 point2 = cities[j].points[0]
                 dist = self.__distance__(point1, point2)
@@ -288,8 +294,8 @@ class Map:
         return sum
 
 
-    def __find_odd_roads__(self, cities, graph):
-        odd_roads =[]
+    def __find_odd_road_endpoints__(self, cities, graph):
+        odd_road_endpoints =[]
         for c1 in range(len(graph)):
             for c2 in range(c1+1, len(graph)):
                 for c3 in range(c2+1, len(graph)):
@@ -300,20 +306,20 @@ class Map:
                     if city1 == -1 and city2 == -1:
                         continue
 
-                    odd_roads.append((cities[city1],cities[city2]))
+                    odd_road_endpoints.append((cities[city1],cities[city2]))
                     graph[city1][city2] = 0
                     
 
-        self.odd_roads += odd_roads
+        self.odd_road_endpoints += odd_road_endpoints
 
     
-    def __remove_odd_roads__(self):
-        new_all_roads = []
-        for road in self.all_roads:
-            if not road in self.odd_roads:
-                new_all_roads.append(road)
-        self.all_roads = new_all_roads
-        self.odd_roads = []
+    def __remove_odd_road_endpoints__(self):
+        new_all_road_endpoints = []
+        for road in self.all_road_endpoints:
+            if not road in self.odd_road_endpoints:
+                new_all_road_endpoints.append(road)
+        self.all_road_endpoints = new_all_road_endpoints
+        self.odd_road_endpoints = []
 
                     
         
@@ -351,4 +357,11 @@ class Map:
         return (-1, -1)
 
 
+    def __create_road_paths__(self, world_map, continent):
+        for i in range(len(self.all_road_endpoints)):
+            road_endpoints = self.all_road_endpoints[i]
+            road = Road(road_endpoints, world_map, continent, self.terrains, self.bioms)
+            #print("endpoints", road_endpoints[0].points[0], road_endpoints[1].points[0])
+            print("road", road.path)
+            self.roads.append(road)
 

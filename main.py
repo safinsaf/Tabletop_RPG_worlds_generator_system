@@ -81,8 +81,8 @@ def draw_map(map_name):
                 fill=(0, 0, 255),
             )
 
-    for i in range(len(world_map.all_roads)):
-        (city1, city2) = world_map.all_roads[i]
+    for i in range(len(world_map.all_road_endpoints)):
+        (city1, city2) = world_map.all_road_endpoints[i]
         x1 = city1.points[0][0]
         y1 = city1.points[0][1]
         x2 = city2.points[0][0]
@@ -95,18 +95,36 @@ def draw_map(map_name):
                 width=5
                 )
 
-    for i in range(len(world_map.odd_roads)):
-        (city1, city2) = world_map.odd_roads[i]
-        x1 = city1.points[0][0]
-        y1 = city1.points[0][1]
-        x2 = city2.points[0][0]
-        y2 = city2.points[0][1]
+    # for i in range(len(world_map.odd_roads)):
+    #     (city1, city2) = world_map.odd_roads[i]
+    #     x1 = city1.points[0][0]
+    #     y1 = city1.points[0][1]
+    #     x2 = city2.points[0][0]
+    #     y2 = city2.points[0][1]
 
-        points = [world_map.cells[x1][y1].center, world_map.cells[x2][y2].center]
-        draw.line(
-                [(y, x) for (x, y) in points],
-                fill=(255,0,0),
-                width=5
+    #     points = [world_map.cells[x1][y1].center, world_map.cells[x2][y2].center]
+    #     draw.line(
+    #             [(y, x) for (x, y) in points],
+    #             fill=(255,0,0),
+    #             width=5
+    #             )
+
+    for road_obj in world_map.roads:
+        road = road_obj.path
+        #print(road)
+        if len(road) == 0:
+            continue
+        for i in range(0, len(road) - 1):
+            current = road[i]
+            next = road[i + 1]
+            x1, y1 = current[0], current[1]
+            x2, y2 = next[0], next[1]
+            (x1_center, y1_center) = world_map.cells[x1][y1].center
+            (x2_center, y2_center) = world_map.cells[x2][y2].center
+            draw.line(
+                (y1_center, x1_center, y2_center, x2_center),
+                fill=(200, 0, 0),
+                width=5,    
                 )
 
     time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
@@ -215,7 +233,7 @@ for i in range(100):
     biom4.increase_territory(world_map, 10)
 
 
-world_map.create_roads(continent1)
+world_map.create_roads(world_map, continent1, terrains, bioms)
 
 
 draw_map("bioms.png")
