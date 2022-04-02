@@ -18,7 +18,7 @@ from races.__read_races__ import read_races
 HEIGHT, WIDTH = 80, 100
 MAP_TYPE = "HEX"  # HEX|VORONOI
 
-size = 50
+size = 100
 
 world_map = Map(WIDTH, HEIGHT, size, MAP_TYPE)
 
@@ -81,22 +81,22 @@ def draw_map(map_name):
                 fill=(0, 0, 255),
             )
 
-    for i in range(len(world_map.all_road_endpoints)):
-        (city1, city2) = world_map.all_road_endpoints[i]
-        x1 = city1.points[0][0]
-        y1 = city1.points[0][1]
-        x2 = city2.points[0][0]
-        y2 = city2.points[0][1]
+    # for i in range(len(world_map.all_road_endpoints)):
+    #     (city1, city2) = world_map.all_road_endpoints[i]
+    #     x1 = city1.points[0][0]
+    #     y1 = city1.points[0][1]
+    #     x2 = city2.points[0][0]
+    #     y2 = city2.points[0][1]
 
-        points = [world_map.cells[x1][y1].center, world_map.cells[x2][y2].center]
-        draw.line(
-                [(y, x) for (x, y) in points],
-                fill=(255,255,255),
-                width=5
-                )
+    #     points = [world_map.cells[x1][y1].center, world_map.cells[x2][y2].center]
+    #     draw.line(
+    #             [(y, x) for (x, y) in points],
+    #             fill=(255,255,255),
+    #             width=5
+    #             )
 
-    # for i in range(len(world_map.odd_roads)):
-    #     (city1, city2) = world_map.odd_roads[i]
+    # for i in range(len(world_map.odd_road_endpoints)):
+    #     (city1, city2) = world_map.odd_road_endpoints[i]
     #     x1 = city1.points[0][0]
     #     y1 = city1.points[0][1]
     #     x2 = city2.points[0][0]
@@ -209,7 +209,7 @@ world_map.rivers_finalize()
 races = read_races()
 
 cities = []
-for i in range(20):
+for i in range(25):
     city = City("city" + str(i), continent1, world_map, races, "Human")
     cities.append(city)
 world_map.cities = cities

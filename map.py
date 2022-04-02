@@ -308,7 +308,6 @@ class Map:
 
                     odd_road_endpoints.append((cities[city1],cities[city2]))
                     graph[city1][city2] = 0
-                    
 
         self.odd_road_endpoints += odd_road_endpoints
 

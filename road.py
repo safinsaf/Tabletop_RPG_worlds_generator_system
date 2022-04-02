@@ -54,9 +54,9 @@ class Road:
             if (x, y) == end_point:
                 end_index = len(dijkstra_map) - 1
         
-        print("Point1", start_point, end_point)
-        print("Start index", start_index, "End index", end_index)
-        print("Start coord", dijkstra_map[start_index], "End coord", dijkstra_map[end_index])
+        #print("Point1", start_point, end_point)
+        #print("Start index", start_index, "End index", end_index)
+        #print("Start coord", dijkstra_map[start_index], "End coord", dijkstra_map[end_index])
 
 
         dist_dijkstra_map = [1e10 for i in range(len(dijkstra_map))]
