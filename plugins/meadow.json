@@ -1,0 +1,11 @@
+{
+  "speed_of_growth":5,
+  "color" : {
+    "r_left": 100, "r_right": 120,
+    "g_left": 100, "g_right": 120,
+    "b_left": 100, "b_right": 120,
+    "a_left": 100, "a_right": 120
+  },
+  "restricted_terrains": ["mountain", "hill"],
+  "crossing_weight": 5
+}

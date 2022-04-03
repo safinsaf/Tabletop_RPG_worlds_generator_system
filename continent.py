@@ -8,7 +8,7 @@ class Continent:
     neighbors = []
     color_range = ((30, 50), (200, 220), (0, 10), (200, 210))  # RGBA ranges for random
     cities = []
-    # name = "Africa"
+    name = ""
 
     def __init__(self, start_coords, name, world_map):
 

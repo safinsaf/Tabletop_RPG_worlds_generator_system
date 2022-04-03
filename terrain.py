@@ -16,7 +16,7 @@ class Terrain:
     hill_distribution = [0.0, 0.6, 0.4, 0, 0]
     mountain_distribution = [0.0, 0.05, 0.25, 0.3, 0.4]
 
-    def __init__(self, start_coords, name, terrain_type, world_map, terrains):
+    def __init__(self, start_coords, name, terrain_type, world_map, continent, terrains):
 
         self.name = name
         self.terrain_type = terrain_type

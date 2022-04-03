@@ -1,0 +1,16 @@
+{
+  "speed_of_growth":5,
+  "color" : {
+    "r_left": 130, "r_right": 140,
+    "g_left": 220, "g_right": 230,
+    "b_left": 140, "b_right": 150,
+    "a_left": 100, "a_right": 120
+  },
+  "color_hsv": {
+    "h": 80,
+    "s": 40,
+    "v_left": 50,
+    "v_right": 80
+  },
+  "crossingWeight": 10
+}

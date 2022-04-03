@@ -58,6 +58,8 @@ class Road:
         #print("Start index", start_index, "End index", end_index)
         #print("Start coord", dijkstra_map[start_index], "End coord", dijkstra_map[end_index])
 
+        if len(dijkstra_map) == 0:
+            return
 
         dist_dijkstra_map = [1e10 for i in range(len(dijkstra_map))]
         dist_dijkstra_map[start_index] = 0
