@@ -7,10 +7,10 @@ from biom import Biom
 from terrains.__read_terrains__ import read_terrains
 from plugins.__read_bioms__ import read_bioms
 from races.__read_races__ import read_races
-from draw import draw_map
+from draw import draw_map, draw_schema
 
 from inputs.read_input import read_input
-from inputs.verify_input import InputFormatVerifier
+from inputs.input_analizer import InputAnalizer
 
 # HEIGHT, WIDTH = 100, 200
 # MAP_TYPE = "VORONOI"  # HEX|VORONOI
@@ -21,9 +21,12 @@ MAP_TYPE = "HEX"  # HEX|VORONOI
 size = 100
 
 
-input = read_input("input.json")
-verifier = InputFormatVerifier()
-verifier.verify_input(input)
+input = read_input("input_map_check.json")
+analizer = InputAnalizer()
+all_schemas = analizer.verify_input_format(input)
+
+world_name = input["map_config"]["world_name"]
+draw_schema(world_name, all_schemas[world_name]["continent_names"], all_schemas[world_name]["continent_schema"])
 
 exit(0)
 

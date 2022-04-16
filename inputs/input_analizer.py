@@ -2,49 +2,25 @@
 import logging
 
 from plugins.__read_bioms__ import read_bioms
+from inputs.input_locations import relative_locations, vertical, gorizontal, relative_location_directional
+from inputs.topological_sort import TopologicalSort
+from random import shuffle
 
-class InputFormatVerifier():
+class InputAnalizer():
 
     continent_names = []
+    
     terrain_names = []
+    terrain_names_in_continents = {}
+    
     biom_names = []
+    biom_names_in_continents = {}
 
     bioms_data = []
 
-    relative_locations = [
-        "west",
-        "east",
-        "north",
-        "south",
-        "north-west",
-        "north-east",
-        "south-west",
-        "south-east", 
-    ]
+    all_schemas = {}
 
-    relative_location_inverts = {
-        "west": "east",
-        "east": "west",
-        "north": "south",
-        "south": "north",
-        # "north-west": "south-east",
-        # "north-east": "south-west",
-        # "south-west": "north-east",
-        # "south-east": "north-west",
-    }
-
-    relative_locations_divide = {
-        "west": ["west"],
-        "east": ["east"],
-        "north": ["north"],
-        "south": ["south"],
-        "north-west": ["north", "west"],
-        "north-east": ["north", "east"],
-        "south-west": ["south", "west"],
-        "south-east": ["south", "east"],
-    }
-
-    def verify_input(self, input):
+    def verify_input_format(self, input):
         map_config = input["map_config"]
         continents = input["continents"]
         terrains = input["terrains"]
@@ -87,15 +63,43 @@ class InputFormatVerifier():
 
         self.verify_terrains_relative_location(terrains_relative_location)
         self.verify_terrains_in_terrains_relative_location_exist(terrains_relative_location)
+        
+
 
         self.verify_biomes_relative_location(biomes_relative_location)
         self.verify_biomes_in_biomes_relative_location_exist(biomes_relative_location)
+
+        continent_names_shufled = self.continent_names
+        schema = self.analize_relative_location(self.continent_names, continents_relative_location, "Continents")
+        self.all_schemas[map_config["world_name"]] = {}
+        self.all_schemas[map_config["world_name"]]["continent_names"] = self.continent_names
+        self.all_schemas[map_config["world_name"]]["continent_schema"] = schema
         
+        for continent_name in self.continent_names:
+            
+
+            schema = self.analize_relative_location(self.terrain_names_in_continents[continent_name], terrains_relative_location, "Terrains")
+            self.all_schemas[continent_name] = {}
+            self.all_schemas[continent_name]["terrain_names"] = self.terrain_names_in_continents[continent_name]
+            self.all_schemas[continent_name]["terrain_schema"] = schema
+
+            schema = self.analize_relative_location(self.biom_names_in_continents[continent_name], biomes_relative_location, "Biomes")
+            self.all_schemas[continent_name] = {}
+            self.all_schemas[continent_name]["biom_names"] = self.biom_names_in_continents[continent_name]
+            self.all_schemas[continent_name]["biom_schema"] = schema
+
+        print(self.all_schemas)
+        return self.all_schemas
+
+
 
     def verify_map_config(self, map_config):
+        assert "world_name" in map_config, "map_config must contain parameter world_name"
+        assert type(map_config["world_name"]) == str, "type of world_name must be string"
+        assert map_config["world_name"] != "", "world_name must be nonempty"
 
         assert "height" in map_config, "map_config must contain parameter height" 
-        assert type(map_config["height"]) == int, "Type of height in map_config must be int"
+        assert type(map_config["height"]) == int, "type of height in map_config must be int"
         assert int(map_config["height"]) > 0, "map height should be greater than 0" 
         
         assert "width" in map_config, "map_config must contain int parameter width" 
@@ -130,6 +134,9 @@ class InputFormatVerifier():
     def set_continent_names(self, continents):
         for continent in continents:
             self.continent_names.append(continent["name"])
+            self.terrain_names_in_continents[continent["name"]] = []
+            self.biom_names_in_continents[continent["name"]] = []
+
 
 
     def verify_terrains(self, terrains):
@@ -165,6 +172,7 @@ class InputFormatVerifier():
     def set_terrain_names(self, terrains):
         for terrain in terrains:
             self.terrain_names.append(terrain["name"])
+            self.terrain_names_in_continents[terrain["continent"]].append(terrain["name"])
 
 
     def read_biomes(self):
@@ -204,6 +212,8 @@ class InputFormatVerifier():
     def set_biom_names(self, biomes):
         for biom in biomes:
             self.biom_names.append(biom["name"])
+            self.biom_names_in_continents[biom["continent"]].append(biom["name"])
+
 
 
     def verify_river_clusters(self, river_clusters):
@@ -273,8 +283,8 @@ class InputFormatVerifier():
             location = relation["location"].split()
             assert len(location) == 3 and location[0] == "on" and location[2] == "of", \
                 "location parameter must have format 'in north of' "
-            assert location[1] in self.relative_locations, \
-                f"value of relation must be one of 'on' {self.relative_locations} 'of', but not 'on' " + location[1] + " 'of'"
+            assert location[1] in relative_locations, \
+                f"value of relation must be one of 'on' {relative_locations} 'of', but not 'on' " + location[1] + " 'of'"
 
     def verify_continents_in_continents_relative_location_exist(self, continents_relative_location):
         for relation in continents_relative_location:
@@ -303,8 +313,8 @@ class InputFormatVerifier():
             location = relation["location"].split()
             assert len(location) == 3 and location[0] == "on" and location[2] == "of", \
                 "location parameter must have format 'in north of' "
-            assert location[1] in self.relative_locations, \
-                f"value of relation must be one of 'on' {self.relative_locations} 'of', but not 'on' " + location[1] + " 'of'"
+            assert location[1] in relative_locations, \
+                f"value of relation must be one of 'on' {relative_locations} 'of', but not 'on' " + location[1] + " 'of'"
 
             assert "continent" in relation, "each terrain relation must contain parameter continent"
             assert type(relation["continent"]) == str, "type of continent parameter in terrain must be string"
@@ -338,8 +348,8 @@ class InputFormatVerifier():
             location = relation["location"].split()
             assert len(location) == 3 and location[0] == "on" and location[2] == "of", \
                 "location parameter must have format 'in north of' "
-            assert location[1] in self.relative_locations, \
-                f"value of relation must be one of 'on' {self.relative_locations} 'of', but not 'on' " + location[1] + " 'of'"
+            assert location[1] in relative_locations, \
+                f"value of relation must be one of 'on' {relative_locations} 'of', but not 'on' " + location[1] + " 'of'"
 
             assert "continent" in relation, "each biom relation must contain parameter continent"
             assert type(relation["continent"]) == str, "type of continent parameter in biom must be string"
@@ -356,3 +366,57 @@ class InputFormatVerifier():
 
             assert relation["first"] != relation["second"], \
                 "biom " + relation["first"] + " can not relate to itself"
+
+    def analize_relative_location(self, vertices, relative_location, type):
+        graph_vert = [[0 for j in range(len(vertices))] for i in range(len(vertices))]
+        graph_gor = [[0 for j in range(len(vertices))] for i in range(len(vertices))]
+
+        for relation in relative_location:
+            
+            direction = relation["location"].split()[1]
+            vertical_dir = vertical(direction)
+            gorizontal_dir = gorizontal(direction)
+
+            if relation["first"] not in vertices:
+                continue
+            if relation["second"] not in vertices:
+                continue
+
+            first_idx = vertices.index(relation["first"]) 
+            second_idx = vertices.index(relation["second"])
+
+            if vertical_dir != "":
+                vert_directional, is_changed = relative_location_directional[vertical_dir]
+                if is_changed:
+                    first_idx_vert, second_idx_vert = second_idx, first_idx
+                else:
+                    first_idx_vert, second_idx_vert = first_idx, second_idx
+                graph_vert[first_idx_vert][second_idx_vert] = 1
+            
+            if gorizontal_dir != "":
+                gor_directional, is_changed = relative_location_directional[gorizontal_dir]
+                if is_changed:
+                    first_idx_gor, second_idx_gor = second_idx, first_idx
+                else:
+                    first_idx_gor, second_idx_gor = first_idx, second_idx
+                graph_gor[first_idx_gor][second_idx_gor] = 1
+
+        topological_sort = TopologicalSort()
+        is_cyclic_vert = topological_sort.is_cyclic(graph_vert)
+        is_cyclic_gor = topological_sort.is_cyclic(graph_gor)
+        
+        assert not is_cyclic_vert, "There is cycle in " + type
+        assert not is_cyclic_gor, "There is cycle in " + type
+
+        sorted_vert = topological_sort.topological_sort(graph_vert)
+        sorted_gor = topological_sort.topological_sort(graph_gor)
+
+        arr = [[-1 for j in range(len(vertices))] for i in range(len(vertices))]
+
+        for i in range(len(vertices)):
+            x, y = sorted_vert.index(i), sorted_gor.index(i)
+            arr[x][y] = i
+
+        return arr
+        
+

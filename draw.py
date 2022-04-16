@@ -114,3 +114,27 @@ def draw_map(world_map: Map, map_name: str, rivers = True, cities = True, roads 
 
     time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
     img.save("images/" + time + "_" + map_name, "PNG")
+
+
+
+def draw_schema(schema_name, names, schema):
+    image_size = 100
+    img = Image.new("RGB", ((len(schema)+1)*image_size, (len(schema[0])+1)*image_size))
+    draw = ImageDraw.Draw(img, "RGBA")
+
+    draw.text((10, 10), "%s" % (schema_name))
+    
+    for i in range(len(schema)):
+        for j in range(len(schema[0])):
+            x_center = (i+1) * image_size
+            y_center = (j+1) * image_size
+            if schema[i][j] == -1:
+                continue
+            draw.rectangle(
+                (y_center - 10, x_center - 10, y_center + 10, x_center + 10),
+                fill=(255, 255, 0),
+            )
+            draw.text((y_center - 10, x_center - 30), names[schema[i][j]])           
+
+    time = datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+    img.save("images/" + time + "_" + schema_name + ".png", "PNG")

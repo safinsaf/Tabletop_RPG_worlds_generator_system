@@ -10,7 +10,13 @@
     "continents":[
         {"name": "Continent1"}, 
         {"name": "Continent2"}, 
-        {"name": "Continent3"}
+        {"name": "Continent3"},
+        {"name": "Continent4"}, 
+        {"name": "Continent5"}, 
+        {"name": "Continent6"},
+        {"name": "Continent7"}, 
+        {"name": "Continent8"}, 
+        {"name": "Continent9"}
     ],
     
     "terrains":[
@@ -117,7 +123,7 @@
         },
         {
             "first": "Continent2",
-            "location": "on north-west of",
+            "location": "on north of",
             "second": "Continent3"
         }
     ],
