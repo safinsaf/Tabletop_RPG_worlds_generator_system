@@ -119,7 +119,7 @@ def draw_map(world_map: Map, map_name: str, rivers = True, cities = True, roads 
 
 def draw_schema(schema_name, names, schema):
     image_size = 100
-    img = Image.new("RGB", ((len(schema)+1)*image_size, (len(schema[0])+1)*image_size))
+    img = Image.new("RGB", ((len(schema[0])+1)*image_size, (len(schema)+1)*image_size))
     draw = ImageDraw.Draw(img, "RGBA")
 
     draw.text((10, 10), "%s" % (schema_name))

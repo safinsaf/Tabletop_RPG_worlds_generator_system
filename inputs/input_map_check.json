@@ -118,14 +118,25 @@
     "continents_relative_location":[
         {
             "first": "Continent1",
-            "location": "on north-east of",
+            "location": "on north of",
             "second": "Continent2"
         },
         {
             "first": "Continent2",
-            "location": "on north of",
+            "location": "on west of",
             "second": "Continent3"
+        },
+        {
+            "first": "Continent3",
+            "location": "on south of",
+            "second": "Continent4"
+        },
+        {
+            "first": "Continent4",
+            "location": "on east of",
+            "second": "Continent5"
         }
+
     ],
 
     "terrains_relative_location":[

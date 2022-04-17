@@ -33,10 +33,10 @@ relative_location_directional = {
 }
 
 relative_locations_divide = {
-    "west": ["", "west"],
-    "east": ["", "east"],
-    "north": ["north", ""],
-    "south": ["south", ""],
+    "west": ["fixed", "west"],
+    "east": ["fixed", "east"],
+    "north": ["north", "fixed"],
+    "south": ["south", "fixed"],
     "north-west": ["north", "west"],
     "north-east": ["north", "east"],
     "south-west": ["south", "west"],
