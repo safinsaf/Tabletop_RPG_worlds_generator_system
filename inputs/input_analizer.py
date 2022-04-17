@@ -69,24 +69,23 @@ class InputAnalizer():
         self.verify_biomes_relative_location(biomes_relative_location)
         self.verify_biomes_in_biomes_relative_location_exist(biomes_relative_location)
 
-        continent_names_shufled = self.continent_names
         schema = self.analize_relative_location(self.continent_names, continents_relative_location, "Continents")
         self.all_schemas[map_config["world_name"]] = {}
         self.all_schemas[map_config["world_name"]]["continent_names"] = self.continent_names
         self.all_schemas[map_config["world_name"]]["continent_schema"] = schema
         
-        for continent_name in self.continent_names:
+        # for continent_name in self.continent_names:
             
 
-            schema = self.analize_relative_location(self.terrain_names_in_continents[continent_name], terrains_relative_location, "Terrains")
-            self.all_schemas[continent_name] = {}
-            self.all_schemas[continent_name]["terrain_names"] = self.terrain_names_in_continents[continent_name]
-            self.all_schemas[continent_name]["terrain_schema"] = schema
+        #     schema = self.analize_relative_location(self.terrain_names_in_continents[continent_name], terrains_relative_location, "Terrains")
+        #     self.all_schemas[continent_name] = {}
+        #     self.all_schemas[continent_name]["terrain_names"] = self.terrain_names_in_continents[continent_name]
+        #     self.all_schemas[continent_name]["terrain_schema"] = schema
 
-            schema = self.analize_relative_location(self.biom_names_in_continents[continent_name], biomes_relative_location, "Biomes")
-            self.all_schemas[continent_name] = {}
-            self.all_schemas[continent_name]["biom_names"] = self.biom_names_in_continents[continent_name]
-            self.all_schemas[continent_name]["biom_schema"] = schema
+        #     schema = self.analize_relative_location(self.biom_names_in_continents[continent_name], biomes_relative_location, "Biomes")
+        #     self.all_schemas[continent_name] = {}
+        #     self.all_schemas[continent_name]["biom_names"] = self.biom_names_in_continents[continent_name]
+        #     self.all_schemas[continent_name]["biom_schema"] = schema
 
         print(self.all_schemas)
         return self.all_schemas
@@ -385,38 +384,47 @@ class InputAnalizer():
             first_idx = vertices.index(relation["first"]) 
             second_idx = vertices.index(relation["second"])
 
-            if vertical_dir != "":
+            if vertical_dir != "" and vertical_dir != "fixed":
                 vert_directional, is_changed = relative_location_directional[vertical_dir]
                 if is_changed:
                     first_idx_vert, second_idx_vert = second_idx, first_idx
                 else:
                     first_idx_vert, second_idx_vert = first_idx, second_idx
                 graph_vert[first_idx_vert][second_idx_vert] = 1
+            elif vertical_dir == "fixed":
+                graph_vert[first_idx][second_idx] = 2
+                graph_vert[second_idx][first_idx] = 2
+
             
-            if gorizontal_dir != "":
+            if gorizontal_dir != "" and gorizontal_dir != "fixed":
                 gor_directional, is_changed = relative_location_directional[gorizontal_dir]
                 if is_changed:
                     first_idx_gor, second_idx_gor = second_idx, first_idx
                 else:
                     first_idx_gor, second_idx_gor = first_idx, second_idx
                 graph_gor[first_idx_gor][second_idx_gor] = 1
+            elif gorizontal_dir == "fixed":
+                graph_gor[first_idx][second_idx] = 2
+                graph_gor[second_idx][first_idx] = 2
 
         topological_sort = TopologicalSort()
-        is_cyclic_vert = topological_sort.is_cyclic(graph_vert)
-        is_cyclic_gor = topological_sort.is_cyclic(graph_gor)
-        
-        assert not is_cyclic_vert, "There is cycle in " + type
-        assert not is_cyclic_gor, "There is cycle in " + type
 
-        sorted_vert = topological_sort.topological_sort(graph_vert)
-        sorted_gor = topological_sort.topological_sort(graph_gor)
+        cc_vert, sorted_vert = topological_sort.topological_sort(graph_vert, type)
+        cc_gor, sorted_gor = topological_sort.topological_sort(graph_gor, type)
 
-        arr = [[-1 for j in range(len(vertices))] for i in range(len(vertices))]
+        arr = [[-1 for j in range(len(cc_gor))] for i in range(len(cc_vert))]
 
-        for i in range(len(vertices)):
-            x, y = sorted_vert.index(i), sorted_gor.index(i)
+        for i in range(len(vertices)): 
+            x, y = -1000, -1000
+            for outter in range(len(cc_vert)):
+                for inner in range(len(cc_vert[outter])):
+                    if cc_vert[outter][inner] == i:
+                        x = sorted_vert.index(outter)
+            for outter in range(len(cc_gor)):
+                for inner in range(len(cc_gor[outter])):
+                    if cc_gor[outter][inner] == i:
+                        y = sorted_gor.index(outter)
             arr[x][y] = i
 
         return arr
         
-
