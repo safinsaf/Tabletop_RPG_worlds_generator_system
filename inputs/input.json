@@ -1,0 +1,154 @@
+{
+    "map_config":{
+        "world_name": "Alagorn",
+        "height": 300,
+        "width": 200,
+        "size": 100,
+        "type": "HEX"
+    },
+    
+    "continents":[
+        {"name": "Continent1"}, 
+        {"name": "Continent2"}, 
+        {"name": "Continent3"}
+    ],
+    
+    "terrains":[
+        {
+            "name": "Terrain_1_1",
+            "type": "mountain",
+            "continent": "Continent1"
+        },
+        {
+            "name": "Terrain_1_2",
+            "type": "plain",
+            "continent": "Continent1"
+        },
+        {
+            "name": "Terrain_1_3",
+            "type": "hill",
+            "continent": "Continent1"
+        },
+        {
+            "name": "Terrain_2_1",
+            "type": "plain",
+            "continent": "Continent2"
+        },
+        {
+            "name": "Terrain_2_2",
+            "type": "hill",
+            "continent": "Continent2"
+        },
+        {
+            "name": "Terrain_3_1",
+            "type": "plain",
+            "continent": "Continent3"
+        }
+    ],
+    
+    "biomes":[
+        {
+            "name": "Biom_1_1",
+            "type": "forest",
+            "continent": "Continent1"
+        },
+        {
+            "name": "Biom_1_2",
+            "type": "swamp",
+            "continent": "Continent1"
+        },
+        {
+            "name": "Biom_1_3",
+            "type": "desert",
+            "continent": "Continent1"
+        },
+        {
+            "name": "Biom_2_1",
+            "type": "field",
+            "continent": "Continent2"
+        },
+        {
+            "name": "Biom_2_2",
+            "type": "tundra",
+            "continent": "Continent2"
+        },
+        {
+            "name": "Biom_3_1",
+            "type": "swamp",
+            "continent": "Continent3"
+        }
+    ],
+
+    "river_clusters":[
+        {
+            "count": 20,
+            "continent": "Continent1"
+        },
+        {
+            "count": 15,
+            "continent": "Continent2"
+        },
+        {
+            "count": 10,
+            "continent": "Continent3"
+        }
+    ],
+
+    "city_clusters":[
+        {
+            "count": 30,
+            "continent": "Continent1"
+        },
+        {
+            "count": 20,
+            "continent": "Continent2"
+        },
+        {
+            "count": 10,
+            "continent": "Continent3"
+        }
+    ],
+
+    "continents_relative_location":[
+        {
+            "first": "Continent1",
+            "location": "on north-east of",
+            "second": "Continent2"
+        },
+        {
+            "first": "Continent2",
+            "location": "on north-west of",
+            "second": "Continent3"
+        }
+    ],
+
+    "terrains_relative_location":[
+        {
+            "continent": "Continent1",
+            "first": "Terrain_1_1",
+            "location": "on north of",
+            "second": "Terrain_1_2"
+        },
+        {
+            "continent": "Continent1",
+            "first": "Terrain_1_2",
+            "location": "on north of",
+            "second": "Terrain_1_3"
+        }
+    ],
+
+    "biomes_relative_location": [
+        {
+            "continent": "Continent4",
+            "first": "Biom_1_1",
+            "location": "on north of",
+            "second": "Biom_1_2"
+        },
+        {
+            "continent": "Continent1",
+            "first": "Biom_1_2",
+            "location": "on north of",
+            "second": "Biom_1_3"
+        }
+    ]
+  }
