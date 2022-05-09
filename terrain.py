@@ -115,22 +115,22 @@ class Terrain:
 
         for (x, y) in internals:
             height = 0
-            if self.terrain_type == "Plain":
+            if self.terrain_type == "plain":
                 height = random.choices(self.all_heights, self.plain_distribution)
-            elif self.terrain_type == "Hill":
+            elif self.terrain_type == "hill":
                 height = random.choices(self.all_heights, self.hill_distribution)
-            elif self.terrain_type == "Mountain":
+            elif self.terrain_type == "mountain":
                 height = random.choices(self.all_heights, self.mountain_distribution)
             world_map.cells[x][y].set_height(height[0])
         self.internals = internals
 
     def __set_color_from_height__(self, world_map):
         for (x, y) in self.coords_arr:
-            HSV_color = self.terrains[self.terrain_type]["ColorHSV"]
-            H = HSV_color["H"]
-            S = HSV_color["S"]
-            V_left = HSV_color["V_left"]
-            V_right = HSV_color["V_right"]
+            HSV_color = self.terrains[self.terrain_type]["color_hsv"]
+            H = HSV_color["h"]
+            S = HSV_color["s"]
+            V_left = HSV_color["v_left"]
+            V_right = HSV_color["v_right"]
             V = V_left + (V_right - V_left) * (
                 ((world_map.cells[x][y].height - 1)) / (len(self.all_heights) - 1)
             )
@@ -148,11 +148,11 @@ class Terrain:
         self.color_range = new_color_range
 
     def __set_default_color_range__(self):
-        color = self.terrains[self.terrain_type]["Color"]
-        R = (color["R_left"], color["R_right"])
-        G = (color["G_left"], color["G_right"])
-        B = (color["B_left"], color["B_right"])
-        A = (color["A_left"], color["A_right"])
+        color = self.terrains[self.terrain_type]["color"]
+        R = (color["r_left"], color["r_right"])
+        G = (color["g_left"], color["g_right"])
+        B = (color["b_left"], color["b_right"])
+        A = (color["a_left"], color["a_right"])
         self.color_range = (R, G, B, A)
 
     def __errosion__(self, world_map):
@@ -161,3 +161,5 @@ class Terrain:
             for (i, j) in neighbors:
                 if world_map.cells[x][y].height - world_map.cells[i][j].height > 1:
                     world_map.cells[x][y].height = world_map.cells[i][j].height + 1
+
+

@@ -62,30 +62,33 @@ class InputAnalizer():
         self.verify_continents_in_continents_relative_location_exist(continents_relative_location)
 
         self.verify_terrains_relative_location(terrains_relative_location)
-        self.verify_terrains_in_terrains_relative_location_exist(terrains_relative_location)
-        
-
+        self.verify_terrains_in_terrains_relative_location_exist(terrains_relative_location)        
 
         self.verify_biomes_relative_location(biomes_relative_location)
         self.verify_biomes_in_biomes_relative_location_exist(biomes_relative_location)
+
+        self.set_terrain_types(continents, terrains)
+        self.set_biom_types(continents, biomes)
 
         schema = self.analize_relative_location(self.continent_names, continents_relative_location, "Continents")
         self.all_schemas[map_config["world_name"]] = {}
         self.all_schemas[map_config["world_name"]]["continent_names"] = self.continent_names
         self.all_schemas[map_config["world_name"]]["continent_schema"] = schema
         
-        # for continent_name in self.continent_names:
-            
+        for continent_name in self.continent_names:
 
-        #     schema = self.analize_relative_location(self.terrain_names_in_continents[continent_name], terrains_relative_location, "Terrains")
-        #     self.all_schemas[continent_name] = {}
-        #     self.all_schemas[continent_name]["terrain_names"] = self.terrain_names_in_continents[continent_name]
-        #     self.all_schemas[continent_name]["terrain_schema"] = schema
+            self.all_schemas[continent_name] = {}
 
-        #     schema = self.analize_relative_location(self.biom_names_in_continents[continent_name], biomes_relative_location, "Biomes")
-        #     self.all_schemas[continent_name] = {}
-        #     self.all_schemas[continent_name]["biom_names"] = self.biom_names_in_continents[continent_name]
-        #     self.all_schemas[continent_name]["biom_schema"] = schema
+            schema = self.analize_relative_location(self.terrain_names_in_continents[continent_name], terrains_relative_location, "Terrains")
+            self.all_schemas[continent_name]["terrain_names"] = self.terrain_names_in_continents[continent_name]
+            self.all_schemas[continent_name]["terrain_schema"] = schema
+            self.all_schemas[continent_name]["terrain_types"] = self.terrain_types_in_continents[continent_name]
+
+            schema = self.analize_relative_location(self.biom_names_in_continents[continent_name], biomes_relative_location, "Biomes")
+            self.all_schemas[continent_name]["biom_names"] = self.biom_names_in_continents[continent_name]
+            self.all_schemas[continent_name]["biom_schema"] = schema
+            self.all_schemas[continent_name]["biom_types"] = self.biom_types_in_continents[continent_name]
+
 
         print(self.all_schemas)
         return self.all_schemas
@@ -428,3 +431,29 @@ class InputAnalizer():
 
         return arr
         
+
+    def set_terrain_types(self, continents, terrains):
+        terrain_types_in_continents = {}
+        for continent in continents:
+            terrain_types_in_continents[continent["name"]] = {}
+
+        for terrain in terrains:
+            terrain_name = terrain["name"]
+            terrain_type = terrain["type"]
+            continent_name = terrain["continent"]
+            terrain_types_in_continents[continent_name][terrain_name] = terrain_type
+
+        self.terrain_types_in_continents = terrain_types_in_continents
+
+    def set_biom_types(self, continents, biomes):
+        biom_types_in_continents = {}
+        for continent in continents:
+            biom_types_in_continents[continent["name"]] = {}
+
+        for biom in biomes:
+            biom_name = biom["name"]
+            biom_type = biom["type"]
+            continent_name = biom["continent"]
+            biom_types_in_continents[continent_name][biom_name] = biom_type
+
+        self.biom_types_in_continents = biom_types_in_continents

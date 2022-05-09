@@ -2,6 +2,7 @@ import random
 from math import sqrt
 
 from scipy.spatial import Voronoi
+from sqlalchemy import false
 
 from cell import Cell
 from road import Road
@@ -149,6 +150,20 @@ class Map:
                 new_cell.color = (R, G, B, T)
                 cells[i].append(new_cell)
 
+        return cells
+
+    def all_cell_indexes(self):
+        cells = []
+        for i in range(self.H):
+            for j in range(self.W):
+                cells.append((i, j))
+        return cells
+
+    def all_cell_coords(self, world_map):
+        cells = []
+        for i in range(world_map.H):
+            for j in range(world_map.W):
+                cells.append(world_map.cells[i][j].center)
         return cells
 
     def __generate_voronoi_map__(self):

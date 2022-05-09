@@ -139,7 +139,7 @@
 
     "biomes_relative_location": [
         {
-            "continent": "Continent4",
+            "continent": "Continent1",
             "first": "Biom_1_1",
             "location": "on north of",
             "second": "Biom_1_2"
@@ -147,7 +147,7 @@
         {
             "continent": "Continent1",
             "first": "Biom_1_2",
-            "location": "on north of",
+            "location": "on east of",
             "second": "Biom_1_3"
         }
     ]

@@ -1,8 +1,8 @@
 {
     "map_config":{
         "world_name": "Alagorn",
-        "height": 300,
-        "width": 200,
+        "height": 80,
+        "width": 100,
         "size": 100,
         "type": "HEX"
     },

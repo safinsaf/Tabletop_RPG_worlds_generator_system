@@ -29,6 +29,13 @@ class Continent:
     def __free__(self, x, y, world_map):
         return world_map.in_map(x, y) and world_map.cells[x][y].level_0 == "Ocean"
 
+    # def __is_near_other_continent__(self, x, y, continent, world_map):
+    #     neigh0 = self.__find_all_coasts__(world_map)
+    #     neigh1 = world_map.__find_all_neighbors__([(x, y)])
+    #     neigh2 = 
+    #     neigh3 = 
+
+
     def __increase_territory__(self, world_map):
         cell = self.neighbors.pop()
         self.__add_to_continent__(cell, world_map)
@@ -55,6 +62,7 @@ class Continent:
         (x, y) = cell
         world_map.cells[x][y].set_continent(self.name, self.color_range)
         self.coords_arr.append((x, y))
+    
 
     def fill_holes(self, world_map):
         is_last = True
@@ -124,6 +132,22 @@ class Continent:
     def update_neighbors(self, world_map):
         self.neighbors = world_map.__find_neighbors__(self)
         self.neighbors = list(dict.fromkeys(self.neighbors))
+        self.neighbors = self.remove_near_other_continents(self.neighbors, world_map)
+
+    def remove_near_other_continents(self, cells, world_map):
+        new_cells = []
+        for i in range(len(cells)):
+            (x, y) = cells[i]
+            if not self.is_other_continent_near(x, y, world_map):
+                new_cells.append(cells[i])
+        return new_cells
+
+    def is_other_continent_near(self, x, y, world_map):
+        neighbors = world_map.__find_all_neighbors__([(x, y)])
+        is_edge = any(
+            world_map.cells[i][j].level_0 != "Ocean" and world_map.cells[i][j].level_0 != self.name for (i, j) in neighbors
+        )
+        return is_edge
 
     def __find_all_coasts__(self, world_map):
         coasts = []
@@ -136,3 +160,14 @@ class Continent:
                 continue
             coasts.append((x, y))
         return coasts
+
+
+    def all_cell_indexes(self):
+        cells = self.coords_arr
+        return cells
+
+    def all_cell_coords(self, world_map):
+        cells = []
+        for index in self.coords_arr:
+            cells.append(world_map.cells[index[0]][index[1]].center)
+        return cells

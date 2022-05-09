@@ -27,7 +27,7 @@ class Biom:
         self.__set_default_color_range__()
 
     def is_restricted(self, x, y, world_map):
-        return world_map.cells[x][y].terrain_type in self.bioms[self.biom_type]["RestrictedTerrains"]
+        return world_map.cells[x][y].terrain_type in self.bioms[self.biom_type]["restricted_terrains"]
 
     def __free__(self, x, y, world_map):
         return (
@@ -62,9 +62,9 @@ class Biom:
         self.color_range = new_color_range
 
     def __set_default_color_range__(self):
-        color = self.bioms[self.biom_type]["Color"]
-        R = (color["R_left"], color["R_right"])
-        G = (color["G_left"], color["G_right"])
-        B = (color["B_left"], color["B_right"])
-        A = (color["A_left"], color["A_right"])
+        color = self.bioms[self.biom_type]["color"]
+        R = (color["r_left"], color["r_right"])
+        G = (color["g_left"], color["g_right"])
+        B = (color["b_left"], color["b_right"])
+        A = (color["a_left"], color["a_right"])
         self.color_range = (R, G, B, A)
