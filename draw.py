@@ -20,7 +20,6 @@ class Drawer():
         image_size = world_map.image_size()
         img = Image.new("RGB", (image_size[0], image_size[1]))
         draw = ImageDraw.Draw(img, "RGBA")
-        print("ok")
 
         for i in range(world_map.H):
             for j in range(world_map.W):
@@ -28,19 +27,24 @@ class Drawer():
                     [(y, x) for (x, y) in world_map.cells[i][j].borders],
                     fill=world_map.cells[i][j].color
                 )
-                if world_map.cells[i][j].border_color != (-1, -1, -1, -1):
-                    polygon = world_map.cells[i][j].borders
-                    polygon.append(world_map.cells[i][j].borders[0])
-                    draw.line(
-                        [(y, x) for (x, y) in polygon],
-                        fill=world_map.cells[i][j].border_color,
-                        width=world_map.size//3
-                    )
+                # if world_map.cells[i][j].border_color != (-1, -1, -1, -1):
+                #     polygon = world_map.cells[i][j].borders
+                #     polygon.append(world_map.cells[i][j].borders[0])
+                #     draw.line(
+                #         [(y, x) for (x, y) in polygon],
+                #         fill=world_map.cells[i][j].border_color,
+                #         width=world_map.size//3
+                #     )
+                draw.polygon(
+                    [(y, x) for (x, y) in world_map.cells[i][j].borders],
+                    fill=world_map.cells[i][j].border_color
+                )
                 (x, y) = world_map.cells[i][j].center
-                draw.text((y - 10, x - 10), str(world_map.cells[i][j].height))
-                draw.text((y - 10, x), "%s %s" % (int(i), int(j)))
-                draw.text((y - 10, x + 10), "%s" % world_map.cells[i][j].level_0)
-                draw.text((y - 10, x + 20), "%s" % world_map.cells[i][j].level_1)
+                draw.text((y - 10, x - 20), str(world_map.cells[i][j].height))
+                draw.text((y - 10, x - 10), "%s %s" % (int(i), int(j)))
+                draw.text((y - 10, x), "%s" % world_map.cells[i][j].level_0)
+                draw.text((y - 10, x + 10), "%s" % world_map.cells[i][j].level_1)
+                draw.text((y - 10, x + 20), "%s" % world_map.cells[i][j].level_2)
 
         if rivers:
             for river_obj in world_map.rivers:
@@ -56,7 +60,7 @@ class Drawer():
                     (x2_center, y2_center) = world_map.cells[x2][y2].center
                     draw.line(
                         (y1_center, x1_center, y2_center, x2_center),
-                        fill=(100, 100, 100),
+                        fill=(0, 0, 255),
                         width=world_map.size // 10,
                     )
 
@@ -136,7 +140,7 @@ class Drawer():
         ss = 30
 
         if len(schema) == 0:
-            print("Nothing to draw")
+            print("Nothing to draw for" + schema_name)
             return
 
         img = Image.new("RGB", ((len(schema[0])+1)*image_size, (len(schema)+1)*image_size), (200,200,200))

@@ -8,13 +8,13 @@ class Cell:
     borders = [(0, 0), (0, 0), (0, 0), (0, 0)]
     color = (0, 0, 0, 0)
     border_color = (-1, -1, -1, -1)
-    terrain_type = ""  # Plain|Hill|Mountain
+    terrain_type = ""  # plain|hill|mountain
     biom_type = ""
-    level_0 = "Ocean"  # "Ocean|$(name)"
-    level_1 = "Terrain"  # "Terrain|$(name)"
-    level_2 = "Biom"  # "Biom|$(name)"
+    level_0 = "ocean"  # "ocean|$(name)"
+    level_1 = "terrain"  # "terrain|$(name)"
+    level_2 = "biom"  # "biom|$(name)"
     river = False
-    city = "City"
+    city = "city"
 
     def __init__(self, center, borders):
         self.center = center

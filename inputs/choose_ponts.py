@@ -36,11 +36,11 @@ class CoordsFinder():
             
             borders = [left, right, up, down]
 
-            print(borders)
+            #print(borders)
 
             coordinates = self.change_size(borders, matrix)
 
-            print(coordinates)
+            #print(coordinates)
 
 
             coords = [0 for i in range(len(entities_count))]
@@ -53,8 +53,8 @@ class CoordsFinder():
                     if self.in_square((x, y), point_coords[j], world_map.size):
                         found_place = True
                         coords[i] = point_indexes[j]
-                print(i, found_place)
-                print()
+                #print(i, found_place)
+                
                 if not found_place:
                     # a = self.find_closest_point((x, y), point_coords)
                     # print(a)

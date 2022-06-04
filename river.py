@@ -20,7 +20,7 @@ class River:
         neighbors = world_map.__find_all_neighbors__([coast])
         neighbor_ocean = 0
         for (i, j) in neighbors:
-            if world_map.cells[i][j].level_0 == "Ocean":
+            if world_map.cells[i][j].level_0 == "ocean":
                 neighbor_ocean = (i, j)
                 break
         path = [neighbor_ocean] + path
@@ -40,7 +40,7 @@ class River:
         for (x2, y2) in neighbors:
             (center_x2, center_y2) = world_map.cells[x2][y2].center
             dx2, dy2 = abs(center_xf - center_x2), abs(center_yf - center_y2)
-            if world_map.cells[x2][y2].level_0 == "Ocean":
+            if world_map.cells[x2][y2].level_0 == "ocean":
                 continue
             if (
                 dx1 ** 2 + dy1 ** 2 >= dx2 ** 2 + dy2 ** 2
@@ -101,7 +101,7 @@ class River:
             neighbors_i = world_map.__find_all_neighbors__([vertices[i]])
             for j in range(len(neighbors_i)):
                 (x, y) = neighbors_i[j]
-                if world_map.cells[x][y].level_0 == "Ocean":
+                if world_map.cells[x][y].level_0 == "ocean":
                     continue
                 index = vertices_inverse[neighbors_i[j]]
                 edges[i].append(index)

@@ -35,8 +35,8 @@ class Terrain:
     def __free__(self, x, y, world_map):
         return (
             world_map.in_map(x, y)
-            and world_map.cells[x][y].level_0 != "Ocean"
-            and world_map.cells[x][y].level_1 == "Terrain"
+            and world_map.cells[x][y].level_0 != "ocean"
+            and world_map.cells[x][y].level_1 == "terrain"
         )
 
     def __increase_territory__(self, world_map):
@@ -67,9 +67,9 @@ class Terrain:
     def __neighbors_types__(self, neighbors, world_map):
         result = []
         for (x, y) in neighbors:
-            if world_map.cells[x][y].level_0 == "Ocean":
-                result.append("Ocean")
-            elif world_map.cells[x][y].level_1 != "Terrain":
+            if world_map.cells[x][y].level_0 == "ocean":
+                result.append("ocean")
+            elif world_map.cells[x][y].level_1 != "terrain":
                 result.append(world_map.cells[x][y].terrain_type)
         return result
 
@@ -84,18 +84,18 @@ class Terrain:
 
             neighbors_types = self.__neighbors_types__(neighbors, world_map)
 
-            if "Ocean" in neighbors_types:
+            if "ocean" in neighbors_types:
                 world_map.cells[x][y].set_height(1)
                 # world_map.cells[x][y].set_color_from_range(((0,10),(0,10),(0,10),(100,102)))
                 # print(x, y, world_map.cells[x][y].height)
                 # print(neighbors)
                 # print(neighbors_types)
-            elif self.terrain_type == "Hill":
+            elif self.terrain_type == "hill":
                 world_map.cells[x][y].set_height(2)
-            elif self.terrain_type == "Mountain":
+            elif self.terrain_type == "mountain":
                 world_map.cells[x][y].set_height(3)
-            elif self.terrain_type == "Plain" and (
-                "Mountain" in neighbors_types or "Hill" in neighbors_types
+            elif self.terrain_type == "plain" and (
+                "mountain" in neighbors_types or "hill" in neighbors_types
             ):
                 world_map.cells[x][y].set_height(2)
             else:

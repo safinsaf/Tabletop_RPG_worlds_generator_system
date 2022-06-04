@@ -7,10 +7,10 @@
     "a_left": 100, "a_right": 120
   },
   "color_hsv": {
-    "h": 80,
-    "s": 40,
-    "v_left": 50,
-    "v_right": 80
+    "h": 195,
+    "s": 0,
+    "v_left": 30,
+    "v_right": 70
   },
-  "crossingWeight": 10
+  "crossing_weight": 10
 }

@@ -141,12 +141,12 @@ class Road:
 
         weight = 0
         if terrain_type != "":
-            weight += self.terrains[terrain_type]["CrossingWeight"]
+            weight += self.terrains[terrain_type]["crossing_weight"]
         else:
             weight += 1e10
 
         if biom_type != "":
-            weight += self.bioms[biom_type]["CrossingWeight"]
+            weight += self.bioms[biom_type]["crossing_weight"]
         else:
             weight += 1e10
 

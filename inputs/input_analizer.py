@@ -69,8 +69,12 @@ class InputAnalizer():
 
         self.set_terrain_types(continents, terrains)
         self.set_biom_types(continents, biomes)
+        self.set_rivers(continents, river_clusters)
+        self.set_cities(continents, city_clusters)
+        
 
-        schema = self.analize_relative_location(self.continent_names, continents_relative_location, "Continents")
+
+        schema = self.analize_relative_location(self.continent_names, continents_relative_location, "continents")
         self.all_schemas[map_config["world_name"]] = {}
         self.all_schemas[map_config["world_name"]]["continent_names"] = self.continent_names
         self.all_schemas[map_config["world_name"]]["continent_schema"] = schema
@@ -79,18 +83,20 @@ class InputAnalizer():
 
             self.all_schemas[continent_name] = {}
 
-            schema = self.analize_relative_location(self.terrain_names_in_continents[continent_name], terrains_relative_location, "Terrains")
+            schema = self.analize_relative_location(self.terrain_names_in_continents[continent_name], terrains_relative_location, "terrains")
             self.all_schemas[continent_name]["terrain_names"] = self.terrain_names_in_continents[continent_name]
             self.all_schemas[continent_name]["terrain_schema"] = schema
             self.all_schemas[continent_name]["terrain_types"] = self.terrain_types_in_continents[continent_name]
 
-            schema = self.analize_relative_location(self.biom_names_in_continents[continent_name], biomes_relative_location, "Biomes")
+            schema = self.analize_relative_location(self.biom_names_in_continents[continent_name], biomes_relative_location, "biomes")
             self.all_schemas[continent_name]["biom_names"] = self.biom_names_in_continents[continent_name]
             self.all_schemas[continent_name]["biom_schema"] = schema
             self.all_schemas[continent_name]["biom_types"] = self.biom_types_in_continents[continent_name]
 
+            self.all_schemas[continent_name]["rivers_count"] = self.cities_count_in_continents[continent_name]
+            self.all_schemas[continent_name]["cities_count"] = self.cities_count_in_continents[continent_name]
+            
 
-        print(self.all_schemas)
         return self.all_schemas
 
 
@@ -457,3 +463,34 @@ class InputAnalizer():
             biom_types_in_continents[continent_name][biom_name] = biom_type
 
         self.biom_types_in_continents = biom_types_in_continents
+
+
+    def set_rivers(self, continents, rivers):
+        rivers_count_in_continents = {}
+
+        for continent in continents:
+            rivers_count_in_continents[continent["name"]] = {}
+
+        for river in rivers:
+            rivers_count = river["count"]
+            continent_name = river["continent"]
+            rivers_count_in_continents[continent_name] = rivers_count
+
+        self.rivers_count_in_continents = rivers_count_in_continents
+
+
+    def set_cities(self, continents, cities):
+        cities_count_in_continents = {}
+        
+        for continent in continents:
+            cities_count_in_continents[continent["name"]] = {}
+
+        for city in cities:
+            cities_count = city["count"]
+            continent_name = city["continent"]
+            cities_count_in_continents[continent_name] = cities_count
+
+        self.cities_count_in_continents = cities_count_in_continents
+        pass
+
+

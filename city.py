@@ -13,14 +13,14 @@ class City:
         for (x1, y1) in points:
             if not world_map.cells[x1][y1].river:
                 continue
-            if world_map.cells[x1][y1].city != "NoCity":
+            if world_map.cells[x1][y1].city != "no_city":
                 continue
             height = world_map.cells[x1][y1].height
             neighbors = world_map.__find_all_neighbors__([(x1, y1)])
             random.shuffle(neighbors)
             area = [(x1, y1)]
             for (x2, y2) in neighbors:
-                if world_map.cells[x2][y2].city != "NoCity":
+                if world_map.cells[x2][y2].city != "no_city":
                     continue
                 if world_map.cells[x2][y2].height == height:
                     area.append((x2, y2))
@@ -40,8 +40,8 @@ class City:
                 suburb += new_points
                 suburb = list(set(suburb))
         for (x, y) in suburb:
-            if world_map.cells[x][y].city == "NoCity":
-                world_map.cells[x][y].city = self.name + "Suburb"
+            if world_map.cells[x][y].city == "no_city":
+                world_map.cells[x][y].city = self.name + "suburb"
 
     def assign_initial_coords(self, coords, continent):
         if coords == (-1,-1):
@@ -69,25 +69,25 @@ class City:
 
     def compute_attraction(self, locals, continent, world_map):
         weight = 0
-        attractors = self.races[self.race]["Cities"]["Attractors"]
-        unique = attractors["Unique"]
-        bioms = attractors["Bioms"]
-        terrains = attractors["Terrains"]
+        attractors = self.races[self.race]["cities"]["attractors"]
+        unique = attractors["unique"]
+        bioms = attractors["biomes"]
+        terrains = attractors["terrains"]
 
 
         for level in range(len(locals)):
             for coord in locals[level]:
                 (x, y) = coord
-                if world_map.cells[x][y].level_0 == "Ocean" and \
-                        "Ocean" in unique:
-                    weight += self.compute_func(unique["Ocean"], level)
+                if world_map.cells[x][y].level_0 == "ocean" and \
+                        "ocean" in unique:
+                    weight += self.compute_func(unique["ocean"], level)
                 if world_map.cells[x][y].river and \
-                        "River" in unique:
-                    weight += self.compute_func(unique["River"], level)
-                if world_map.cells[x][y].city != "City" and \
-                        "City" in unique:
-                    weight += self.compute_func(unique["City"], level)
-                if world_map.cells[x][y].level_2 != "Biom" and \
+                        "river" in unique:
+                    weight += self.compute_func(unique["river"], level)
+                if world_map.cells[x][y].city != "city" and \
+                        "city" in unique:
+                    weight += self.compute_func(unique["city"], level)
+                if world_map.cells[x][y].level_2 != "biom" and \
                         world_map.cells[x][y].level_2 in bioms:
                     weight += self.compute_func(bioms[world_map.cells[x][y].level_2], level)
 
@@ -109,7 +109,7 @@ class City:
             for j in range(len(jump_neighbors[level])):
                 new_coords = jump_neighbors[level][j]
                 (x, y) = new_coords
-                if world_map.cells[x][y].level_0 == "Ocean":
+                if world_map.cells[x][y].level_0 == "ocean":
                     continue
                 new_locals = self.find_local(new_coords, depth2, continent, world_map)
                 new_weight = self.compute_attraction(new_locals, continent, world_map)
@@ -119,12 +119,10 @@ class City:
         #print(jump_neighbors[0][0], max_coords)
         #print(max_weight)
         if jump_neighbors[0][0] == max_coords:
-            #print("Out")
             return max_coords
         elif max_weight > weight:
             return self.search_max_placement(max_coords, depth1, depth2, continent, world_map)
         else:
-            #print("Out2")
             return max_coords
 
     def grow_city(self, max_coords, world_map, size = 3):
@@ -134,9 +132,9 @@ class City:
         neighbors = world_map.__find_all_neighbors__([(x1, y1)])
         random.shuffle(neighbors)
         for (x2, y2) in neighbors:
-            if world_map.cells[x2][y2].level_0 == "Ocean":
+            if world_map.cells[x2][y2].level_0 == "ocean":
                 continue
-            if world_map.cells[x2][y2].city != "City":
+            if world_map.cells[x2][y2].city != "city":
                 continue
             if world_map.cells[x2][y2].height == height:
                 self.points.append((x2, y2))
@@ -144,7 +142,7 @@ class City:
             if len(self.points) == size:
                 return
 
-    def __init__(self, name, continent, world_map, races, race="Human", coords=(-1, -1)):
+    def __init__(self, name, continent, world_map, races, race="human", coords=(-1, -1)):
         self.name = name
         self.race = race
         self.races = races
@@ -161,12 +159,12 @@ class City:
     def create_port_optional(self,continent,world_map):
         for i in range(len(self.points)):
             (x,y) = self.points[i]
-            print("checking point", (x,y))
-            print("    river:", world_map.cells[x][y].river)
-            print("    terrain type", world_map.cells[x][y].terrain_type)
-            if world_map.cells[x][y].river and world_map.cells[x][y].terrain_type != "Mountain":
+            #print("checking point", (x,y))
+            #print("    river:", world_map.cells[x][y].river)
+            #print("    terrain type", world_map.cells[x][y].terrain_type)
+            if world_map.cells[x][y].river and world_map.cells[x][y].terrain_type != "mountain":
                 #print("city_points", self.points)
-                print("river port_point:", (x,y))
+                #print("river port_point:", (x,y))
                 #print("river:", world_map.cells[x][y].river)
                 self.__create_port__((x,y))
                 return True
@@ -174,7 +172,7 @@ class City:
 
             coasts = continent.__find_all_coasts__(world_map)
             if (x,y) in coasts:
-                print("sea port_point:", (x,y))
+                #print("sea port_point:", (x,y))
                 self.__create_port__((x,y))
                 return True
 

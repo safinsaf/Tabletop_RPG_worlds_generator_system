@@ -33,8 +33,8 @@ class Map:
     def __grid__(self, i, j):
         if self.map_type == "VORONOI":
             return (
-                self.size * (i + random.random()),
-                self.size * (j + random.random()),
+                self.size * (i + random.random() / 2),
+                self.size * (j + random.random() / 2),
             )
         elif self.map_type == "HEX":
             if i % 2 == 0:
@@ -279,7 +279,7 @@ class Map:
     def __calculate_connection__(self, cities):
         sum_distance = self.__sum_of_city_distances__(cities)
         N = len(cities) * (len(cities) - 1) / 2
-        N = N * 2
+        N = N * 3
         radius = sum_distance / N
         return radius
 
@@ -363,9 +363,9 @@ class Map:
             sin = cross_product / area
 
             if dot_product >= 0 and sin > 0 and sin <= max_sin:
-                print(cross_product, dot_product, area)
+                #print(cross_product, dot_product, area)
                 odd = (triangles[i][0], triangles[i][2])
-                print(odd)
+                #print(odd)
                 return odd
 
         return (-1, -1)
@@ -376,6 +376,6 @@ class Map:
             road_endpoints = self.all_road_endpoints[i]
             road = Road(road_endpoints, world_map, continent, self.terrains, self.bioms)
             #print("endpoints", road_endpoints[0].points[0], road_endpoints[1].points[0])
-            print("road", road.path)
+            #print("road", road.path)
             self.roads.append(road)
 

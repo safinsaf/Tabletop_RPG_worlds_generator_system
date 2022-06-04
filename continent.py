@@ -27,7 +27,7 @@ class Continent:
 
 
     def __free__(self, x, y, world_map):
-        return world_map.in_map(x, y) and world_map.cells[x][y].level_0 == "Ocean"
+        return world_map.in_map(x, y) and world_map.cells[x][y].level_0 == "ocean"
 
     # def __is_near_other_continent__(self, x, y, continent, world_map):
     #     neigh0 = self.__find_all_coasts__(world_map)
@@ -145,7 +145,7 @@ class Continent:
     def is_other_continent_near(self, x, y, world_map):
         neighbors = world_map.__find_all_neighbors__([(x, y)])
         is_edge = any(
-            world_map.cells[i][j].level_0 != "Ocean" and world_map.cells[i][j].level_0 != self.name for (i, j) in neighbors
+            world_map.cells[i][j].level_0 != "ocean" and world_map.cells[i][j].level_0 != self.name for (i, j) in neighbors
         )
         return is_edge
 
@@ -154,7 +154,7 @@ class Continent:
         for (x, y) in self.coords_arr:
             neighbors = world_map.__find_all_neighbors__([(x, y)])
             is_edge = any(
-                world_map.cells[i][j].level_0 == "Ocean" for (i, j) in neighbors
+                world_map.cells[i][j].level_0 == "ocean" for (i, j) in neighbors
             )
             if not is_edge:
                 continue

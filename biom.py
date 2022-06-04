@@ -32,10 +32,10 @@ class Biom:
     def __free__(self, x, y, world_map):
         return (
             world_map.in_map(x, y)
-            and world_map.cells[x][y].level_0 != "Ocean"
-            and world_map.cells[x][y].level_1 != "Terrain"
+            and world_map.cells[x][y].level_0 != "ocean"
+            and world_map.cells[x][y].level_1 != "terrain"
             and not self.is_restricted(x, y, world_map)
-            and world_map.cells[x][y].level_2 == "Biom"
+            and world_map.cells[x][y].level_2 == "biom"
         )
 
     def __increase_territory__(self, world_map):

@@ -42,7 +42,7 @@ for continent_name in all_schemas[world_name]["continent_names"]:
 
 world_map = Map(width, height, size, map_type)
 
-drawer.draw_map(world_map, "Ocean")
+drawer.draw_map(world_map, "ocean")
 
 image_size = world_map.image_size()
 coords_finder = CoordsFinder()
@@ -57,7 +57,6 @@ continent_coords = coords_finder.find_coords(
 continents = []
 for i in range(len(all_schemas[world_name]["continent_names"])):
     continent_name = all_schemas[world_name]["continent_names"][i]
-    print(continent_coords[i])
     continent = Continent(continent_coords[i],continent_name, world_map)
     continents.append(continent)
 
@@ -87,11 +86,10 @@ for continent in continents:
     for i in range(len(all_schemas[continent.name]["terrain_names"])):
         terrain_name = all_schemas[continent.name]["terrain_names"][i]
         terrain_type = all_schemas[continent.name]["terrain_types"][terrain_name]
-        print(terrain_coords[i])
         terrain = Terrain(terrain_coords[i], terrain_name, terrain_type, world_map, continent, terrains_info)
         terrains.append(terrain)
 
-    continent_size = int(len(continent.coords_arr) // len(terrains))
+    continent_size = len(continent.coords_arr) 
     for i in range(continent_size // 10 + 50):
         for j in range(len(terrains)):
             terrain = terrains[j]
@@ -118,24 +116,64 @@ for continent in continents:
     for i in range(len(all_schemas[continent.name]["biom_names"])):
         biom_name = all_schemas[continent.name]["biom_names"][i]
         biom_type = all_schemas[continent.name]["biom_types"][biom_name]
-        print(biom_coords[i])
+        coords = biom_coords[i]
         biom = Biom(biom_coords[i], biom_name, biom_type, biomes_info)
+        
+        if biom.is_restricted(coords[0], coords[1], world_map):
+            points = []
+            for cont_coord in continent.coords_arr:
+                if not biom.is_restricted(cont_coord[0], cont_coord[1], world_map):
+                    points.append(cont_coord)
+            
+            if len(points) == 0:
+                print("All terrains are restricted in ", continent.name, " for ", biom_name)
+                exit(0)
+
+            new_biom_coord = coords_finder.find_closest_point(coords, points)[1]
+
+            biom = Biom(new_biom_coord, biom_name, biom_type, biomes_info)    
         biomes.append(biom)
 
-    continent_size = int(len(continent.coords_arr) // len(biomes))
+    continent_size = len(continent.coords_arr)
     for i in range(continent_size // 10 + 50):
         for j in range(len(biomes)):
             biom = biomes[j]
             biom.increase_territory(world_map, 10)
 
-# biom1 = Biom((45, 45), "Forest A", "Forest", bioms)
-# for i in range(100):
-#     biom1.increase_territory(world_map, 10)
-
 drawer.draw_map(world_map, "Biomes")
-#drawer.draw_map(world_map, "Rivers")
-#drawer.draw_map(world_map, "Cities")
-#drawer.draw_map(world_map, "Roads")
+
+
+for continent in continents:
+    
+    rivers_count = all_schemas[continent.name]["rivers_count"]
+
+    for i in range(rivers_count):
+        river = River(world_map, continent)
+        world_map.rivers.append(river)
+
+world_map.rivers_finalize()
+
+drawer.draw_map(world_map, "Rivers")
+
+races_info = read_races()
+
+for continent in continents:
+    
+    cities_count = all_schemas[continent.name]["cities_count"]
+
+    cities = []
+    for i in range(cities_count):
+        city = City("city" + str(i), continent, world_map, races_info, "human")
+        cities.append(city)
+    world_map.cities += cities
+    
+
+drawer.draw_map(world_map, "Cities")
+
+for continent in continents:
+    world_map.create_roads(world_map, continent, terrains_info, biomes_info)
+
+drawer.draw_map(world_map, "Roads")
 
 
 
