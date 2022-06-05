@@ -2,10 +2,12 @@ import random
 from math import sqrt
 
 from scipy.spatial import Voronoi
-from sqlalchemy import false
+from sqlalchemy import false, true
 
 from cell import Cell
 from road import Road
+
+import numpy as np
 
 
 class Map:
@@ -33,8 +35,8 @@ class Map:
     def __grid__(self, i, j):
         if self.map_type == "VORONOI":
             return (
-                self.size * (i + random.random() / 2),
-                self.size * (j + random.random() / 2),
+                self.size/2 + self.size * (i + random.random() / 3),
+                self.size/2 + self.size * (j + random.random() / 3),
             )
         elif self.map_type == "HEX":
             if i % 2 == 0:
@@ -69,6 +71,17 @@ class Map:
         neigbors_odd = [(0, -1), (0, 1), (-1, 0), (-1, 1), (1, 0), (1, 1)]
         return neigbors_odd
 
+    def __voronoi_have_common_border__(self, cell1, cell2):
+        x1, y1 = cell1[0], cell1[1]
+        x2, y2 = cell2[0], cell2[1]
+
+        borders1 = set(self.cells[x1][y1].borders)
+        borders2 = set(self.cells[x2][y2].borders)
+
+        intersection = borders1.intersection(borders2)
+        return len(intersection) > 0
+        
+
     def __find_neighbors__(self, area_object):
         neighbors = []
         for el in area_object.coords_arr:
@@ -86,8 +99,13 @@ class Map:
 
             for (x, y) in possible_neighbors:
                 if self.in_map(x, y) and area_object.__free__(x, y, self):
-                    neighbors.append((x, y))
+                    if self.map_type == "HEX":
+                        neighbors.append((x, y))
+                    elif self.map_type == "VORONOI" and self.__voronoi_have_common_border__(el, (x,y)):
+                        neighbors.append((x, y))
+
         return neighbors
+        
 
     def __find_all_neighbors__(self, elements):
         neighbors = []
@@ -104,18 +122,44 @@ class Map:
             for (dx, dy) in d:
                 possible_neighbors.append((el[0] + dx, el[1] + dy))
 
+            # for (x, y) in possible_neighbors:
+            #     if self.in_map(x, y):
+            #         neighbors.append((x, y))
             for (x, y) in possible_neighbors:
                 if self.in_map(x, y):
-                    neighbors.append((x, y))
+                    if self.map_type == "HEX":
+                        neighbors.append((x, y))
+                    elif self.map_type == "VORONOI" and self.__voronoi_have_common_border__(el, (x,y)):
+                        neighbors.append((x, y))
         return neighbors
 
     def __create_voronoi__(self, centers):
+
+        # for i in range(self.H):
+        #     for j in range(self.W):
+        #         print(i, j, " : ", centers[i][j])
+        
+        # print(end="\n\n\n")
 
         centers_merged = []
         for i in range(self.H):
             for j in range(self.W):
                 centers_merged.append(centers[i][j])
-        voronoi = Voronoi(centers_merged)
+        
+        edjes = []
+
+        for i in range(-1, self.H+1):
+            edjes.append((i*self.size, -1*self.size))
+            edjes.append((i*self.size, (self.W+1) * self.size))
+
+        for j in range(-1, self.W+1):
+            edjes.append((-1*self.size, j*self.size))
+            edjes.append(( (self.W+1) * self.size, j*self.size))
+
+
+
+        voronoi = Voronoi(centers_merged+edjes, qhull_options="Qbb Qc Qz")
+
 
         vertices = voronoi.vertices
         regions = voronoi.regions
@@ -133,6 +177,9 @@ class Map:
                     point = tuple(point)
                     # point = (point[1], point[0])
                     cell_regions[row][col].append(point)
+                # print(row, col, " : ", centers[row][col])
+                # print(cell_regions[row][col])
+                # print()
 
         return cell_regions
 

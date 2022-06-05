@@ -1,8 +1,8 @@
 {
     "map_config":{
         "world_name": "Alagorn",
-        "height": 200,
-        "width": 200,
+        "height": 100,
+        "width": 150,
         "size": 100,
         "type": "VORONOI"
     },

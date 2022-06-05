@@ -89,8 +89,8 @@ class Continent:
             cell = coasts[i]
             self.__add_to_continent__(cell, world_map)
             is_last = False
-        # if not is_last:
-        #    self.fill_holes(world_map)
+        if not is_last:
+            self.fill_holes(world_map)
 
     def __connectivity_components__(self, coasts, world_map):
         vertices = coasts
