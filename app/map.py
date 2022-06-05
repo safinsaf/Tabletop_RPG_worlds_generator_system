@@ -2,7 +2,6 @@ import random
 from math import sqrt
 
 from scipy.spatial import Voronoi
-from sqlalchemy import false, true
 
 from app.cell import Cell
 from app.road import Road
